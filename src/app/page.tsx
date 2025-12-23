@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { SeveranceCalculator } from "@/components/SeveranceCalculator";
 import { Navbar } from "@/components/Navbar";
 
@@ -9,7 +10,9 @@ export default function Home() {
       {/* Main Content */}
       <main className="mx-auto max-w-[960px] px-4 py-8">
         <h1 className="sr-only">2025 Kıdem ve İhbar Tazminatı Hesaplama</h1>
-        <SeveranceCalculator />
+        <Suspense fallback={<div className="animate-pulse bg-slate-200 dark:bg-slate-800 rounded-lg h-[600px]" />}>
+          <SeveranceCalculator />
+        </Suspense>
         
         {/* JSON-LD Schema */}
         <script
