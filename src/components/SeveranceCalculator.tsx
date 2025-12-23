@@ -697,34 +697,82 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
   });
 
   // Calculate dynamic total based on selections
-  const dynamicTotal = (() => {
-    let total = 0;
-    if (selectedPayments.severance && result.severanceEligible) total += result.severanceNet;
-    if (selectedPayments.notice) total += result.noticeNet;
-    if (selectedPayments.unusedLeave && result.unusedLeaveGross > 0) total += result.unusedLeaveNet;
-    if (selectedPayments.proRated && result.proRatedDays > 0) total += result.proRatedSalaryNet;
-    return total;
+  // Calculate dynamic totals based on selections
+  const { dynamicTotal, dynamicGrossTotal, dynamicSgk, dynamicUnemployment, dynamicIncomeTax, dynamicStampTax, dynamicExemption } = (() => {
+    let net = 0;
+    let gross = 0;
+    let sgk = 0;
+    let unemployment = 0;
+    let incomeTax = 0;
+    let stampTax = 0;
+    let exemption = 0;
+
+    if (selectedPayments.severance && result.severanceEligible) {
+      net += result.severanceNet;
+      gross += result.severanceGross;
+      stampTax += result.severanceStampTax;
+    }
+    if (selectedPayments.notice) {
+      net += result.noticeNet;
+      gross += result.noticeGross;
+      incomeTax += result.noticeIncomeTax;
+      stampTax += result.noticeStampTax;
+      exemption += result.noticeIncomeTaxExemption + result.noticeStampTaxExemption;
+    }
+    if (selectedPayments.unusedLeave && result.unusedLeaveGross > 0) {
+      net += result.unusedLeaveNet;
+      gross += result.unusedLeaveGross;
+      sgk += result.unusedLeaveSgk;
+      unemployment += result.unusedLeaveUnemployment;
+      incomeTax += result.unusedLeaveIncomeTax;
+      stampTax += result.unusedLeaveStampTax;
+      exemption += result.unusedLeaveIncomeTaxExemption + result.unusedLeaveStampTaxExemption;
+    }
+    if (selectedPayments.proRated && result.proRatedDays > 0) {
+      net += result.proRatedSalaryNet;
+      gross += result.proRatedSalaryGross;
+      sgk += result.proRatedSalarySgk;
+      unemployment += result.proRatedSalaryUnemployment;
+      incomeTax += result.proRatedSalaryIncomeTax;
+      stampTax += result.proRatedSalaryStampTax;
+      exemption += result.proRatedSalaryIncomeTaxExemption + result.proRatedSalaryStampTaxExemption;
+    }
+    return { 
+      dynamicTotal: net, 
+      dynamicGrossTotal: gross,
+      dynamicSgk: sgk,
+      dynamicUnemployment: unemployment,
+      dynamicIncomeTax: incomeTax,
+      dynamicStampTax: stampTax,
+      dynamicExemption: exemption
+    };
   })();
 
   // Track previous total for animation
   const prevTotalRef = useRef(dynamicTotal);
+  const prevGrossTotalRef = useRef(dynamicGrossTotal);
   const [priceChange, setPriceChange] = useState<'up' | 'down' | null>(null);
   const [displayedTotal, setDisplayedTotal] = useState(dynamicTotal);
+  const [displayedGrossTotal, setDisplayedGrossTotal] = useState(dynamicGrossTotal);
 
   useEffect(() => {
-    if (prevTotalRef.current !== dynamicTotal) {
+    if (prevTotalRef.current !== dynamicTotal || prevGrossTotalRef.current !== dynamicGrossTotal) {
       const startValue = prevTotalRef.current;
       const endValue = dynamicTotal;
       const diff = endValue - startValue;
+
+      const startGross = prevGrossTotalRef.current;
+      const endGross = dynamicGrossTotal;
+      const diffGross = endGross - startGross;
       
       // Set direction for color
       if (diff > 0) {
         setPriceChange('up');
-      } else {
+      } else if (diff < 0) {
         setPriceChange('down');
       }
       
-      // Animate the number
+      // Animate the numbers
       const duration = 400; // ms
       const steps = 20;
       const stepDuration = duration / steps;
@@ -735,25 +783,31 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
         const progress = currentStep / steps;
         // Easing function for smooth end
         const easeOut = 1 - Math.pow(1 - progress, 3);
+        
         const currentValue = startValue + (diff * easeOut);
         setDisplayedTotal(currentValue);
+
+        const currentGrossValue = startGross + (diffGross * easeOut);
+        setDisplayedGrossTotal(currentGrossValue);
         
         if (currentStep >= steps) {
           clearInterval(interval);
           setDisplayedTotal(endValue);
+          setDisplayedGrossTotal(endGross);
         }
       }, stepDuration);
       
       prevTotalRef.current = dynamicTotal;
+      prevGrossTotalRef.current = dynamicGrossTotal;
       
       // Reset color after animation + delay
       const timer = setTimeout(() => setPriceChange(null), duration + 200);
       return () => {
-        clearTimeout(timer);
         clearInterval(interval);
+        clearTimeout(timer);
       };
     }
-  }, [dynamicTotal]);
+  }, [dynamicTotal, dynamicGrossTotal]);
 
   const togglePayment = (key: keyof typeof selectedPayments) => {
     setSelectedPayments(prev => ({ ...prev, [key]: !prev[key] }));
@@ -776,6 +830,10 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
             </h2>
           </div>
           <div className="flex flex-col items-center md:items-end">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)] mb-1">
+              <span>Toplam Brüt:</span>
+              <span className="text-[var(--text-main)]">{formatCurrency(displayedGrossTotal)}</span>
+            </div>
             <div className="flex items-center gap-2">
               {/* Price change indicator */}
               {priceChange && (
@@ -801,9 +859,6 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
                 {formatCurrency(displayedTotal)}
               </span>
             </div>
-            <span className="text-xs text-[var(--text-muted)] mt-2">
-              Aşağıdan dahil edilecek ödemeleri seçebilirsiniz
-            </span>
           </div>
         </div>
 
@@ -815,6 +870,13 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
             {result.tenure.years} yıl, {result.tenure.months} ay, {result.tenure.days} gün
           </span>
         </div>
+      </div>
+
+      {/* Selection Instruction */}
+      <div className="flex justify-center px-1">
+        <span className="text-sm font-medium text-[var(--text-main)]">
+          Hesaplamaya dahil edilecek ödemeleri aşağıdan seçebilirsiniz
+        </span>
       </div>
 
       {/* Breakdown Grid with Selectable Cards */}
@@ -907,28 +969,32 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
           </div>
           <h3 className="font-bold text-lg text-[var(--text-main)]">Yasal Kesintiler Özeti</h3>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-sm">
           <div className="space-y-1">
-            <span className="text-[var(--text-muted)]">SGK Primi</span>
-            <p className="font-semibold text-[var(--text-main)]">{formatCurrency(result.totalSgk)}</p>
+            <span className="text-[var(--text-muted)]">Toplam Brüt</span>
+            <p className="font-semibold text-[var(--text-main)] text-base">{formatCurrency(dynamicGrossTotal)}</p>
           </div>
           <div className="space-y-1">
-            <span className="text-[var(--text-muted)]">İşsizlik Sig.</span>
-            <p className="font-semibold text-[var(--text-main)]">{formatCurrency(result.totalUnemployment)}</p>
+            <span className="text-[var(--text-muted)]">SGK (İşçi + İşsizlik)</span>
+            <p className="font-semibold text-red-500">{formatCurrency(dynamicSgk + dynamicUnemployment)}</p>
           </div>
           <div className="space-y-1">
             <span className="text-[var(--text-muted)]">Gelir Vergisi</span>
-            <p className="font-semibold text-[var(--text-main)]">{formatCurrency(result.totalIncomeTax)}</p>
+            <p className="font-semibold text-red-500">{formatCurrency(dynamicIncomeTax)}</p>
           </div>
           <div className="space-y-1">
             <span className="text-[var(--text-muted)]">Damga Vergisi</span>
-            <p className="font-semibold text-[var(--text-main)]">{formatCurrency(result.totalStampTax)}</p>
+            <p className="font-semibold text-red-500">{formatCurrency(dynamicStampTax)}</p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-[var(--text-muted)]">Vergi İstisnası</span>
+            <p className="font-semibold text-emerald-600">+{formatCurrency(dynamicExemption)}</p>
           </div>
         </div>
-        <div className="mt-4 pt-3 border-t border-dashed border-[var(--border-light)] flex justify-between items-center">
-          <span className="text-[var(--text-muted)] text-sm">Asgari Ücret İstisnası (Toplam)</span>
-          <span className="font-bold text-emerald-600">
-            +{formatCurrency(result.totalIncomeTaxExemption + result.totalStampTaxExemption)}
+        <div className="mt-4 pt-3 border-t border-dashed border-[var(--border-light)] flex justify-between items-center text-sm font-medium">
+          <span className="text-[var(--text-main)]">Net Ele Geçen Toplam</span>
+          <span className="font-bold text-[#2463eb] text-lg">
+            {formatCurrency(dynamicTotal)}
           </span>
         </div>
       </div>
