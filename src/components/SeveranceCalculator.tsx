@@ -692,11 +692,6 @@ export function SeveranceCalculator() {
         </div>
       </div>
 
-      {/* AdSense Placeholder (Prevent CLS) */}
-      <div id="frame" style={{ width: "100%", margin: "auto", position: "relative", zIndex: 99998 }}>
-        <iframe data-aa='2421744' src='//acceptable.a-ads.com/2421744/?size=Adaptive&background_color=transparent&title_color=2463eb&title_hover_color=2463eb&text_color=757D81&link_color=2463eb&link_hover_color=2463eb'
-                          style={{ border: 0, padding: 0, width: "70%", height: "auto", overflow: "hidden", display: "block", margin: "auto" }}></iframe>
-      </div>
 
       {result && <ResultsCard result={result} />}
     </div>
