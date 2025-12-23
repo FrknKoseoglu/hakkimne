@@ -11,11 +11,6 @@ export default function Home() {
         <h1 className="sr-only">2025 Kıdem ve İhbar Tazminatı Hesaplama</h1>
         <SeveranceCalculator />
         
-        {/* AdSense Placeholder (Prevent CLS) */}
-        <div className="w-full min-h-[250px] bg-slate-50 dark:bg-slate-900/50 rounded-lg flex items-center justify-center text-sm text-[var(--text-muted)] my-8 border border-dashed border-[var(--border-light)]">
-          Reklam Alanı
-        </div>
-        
         {/* JSON-LD Schema */}
         <script
           type="application/ld+json"
