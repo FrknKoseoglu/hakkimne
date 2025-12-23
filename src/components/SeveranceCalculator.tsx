@@ -264,7 +264,30 @@ export function SeveranceCalculator() {
     return null;
   })();
 
+  // Custom validation error for salary fields
+  const [salaryError, setSalaryError] = useState<string | null>(null);
+
   const onSubmit = (data: FormData) => {
+    // Clear previous salary error
+    setSalaryError(null);
+
+    // Conditional validation based on checkbox state
+    if (useMonthlyGross) {
+      // When checkbox is checked, require grossSalary
+      const grossSalaryValue = parseTurkishNumber(data.grossSalary || "");
+      if (grossSalaryValue <= 0) {
+        setSalaryError("Aylık brüt maaş giriniz");
+        return;
+      }
+    } else {
+      // When checkbox is unchecked, require periodSalary
+      const periodSalaryValue = parseTurkishNumber(periodSalary);
+      if (periodSalaryValue <= 0) {
+        setSalaryError("Dönem brüt ücreti giriniz");
+        return;
+      }
+    }
+
     setCalculatorInput({
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate),
@@ -310,6 +333,7 @@ export function SeveranceCalculator() {
                   <Input
                     id="startDate"
                     type="date"
+                    max="9999-12-31"
                     {...register("startDate")}
                     className="h-12 pl-11 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
@@ -326,6 +350,7 @@ export function SeveranceCalculator() {
                   <Input
                     id="endDate"
                     type="date"
+                    max="9999-12-31"
                     {...register("endDate")}
                     className="h-12 pl-11 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
@@ -461,6 +486,14 @@ export function SeveranceCalculator() {
                     </div>
                   )}
                 </div>
+              )}
+
+              {/* Salary validation error */}
+              {salaryError && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {salaryError}
+                </p>
               )}
             </div>
 
