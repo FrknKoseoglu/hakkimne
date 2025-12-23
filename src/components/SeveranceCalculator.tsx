@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useSeveranceCalculator, SeveranceInput, SeveranceResult } from "@/hooks/useSeveranceCalculator";
+import { getFinancialData, formatPeriodName } from "@/lib/financial-data";
 import { 
   Calendar, 
   CalendarDays, 
@@ -186,6 +187,15 @@ export function SeveranceCalculator() {
   const watchedEndDate = watch("endDate");
   const watchedSalaryDay = watch("salaryDay");
   const watchedGrossSalary = watch("grossSalary");
+
+  const grossSalaryValue = parseTurkishNumber(watchedGrossSalary || "");
+  
+  // Get dynamic minimum wage based on exit date (default to current date if not set)
+  const exitDate = watchedEndDate ? new Date(watchedEndDate) : new Date();
+  const financialData = getFinancialData(exitDate);
+  const dynamicMinWage = financialData.minGrossWage;
+  const showMinimumWageWarning = grossSalaryValue > 0 && grossSalaryValue < dynamicMinWage;
+
   
   const [isHydrated, setIsHydrated] = useState(false);
   const searchParams = useSearchParams();
@@ -278,6 +288,7 @@ export function SeveranceCalculator() {
 
   // Get gross salary from form
   const effectiveGrossSalary = parseTurkishNumber(watchedGrossSalary || "");
+
 
   const salaryDayWarning = (() => {
     if (!watchedEndDate || !watchedSalaryDay) return null;
@@ -512,6 +523,17 @@ export function SeveranceCalculator() {
                 {errors.salaryDay && <p className="text-sm text-red-500">{errors.salaryDay.message}</p>}
               </div>
             </div>
+            
+            {showMinimumWageWarning && (
+              <p className="text-sm text-amber-600 flex items-center gap-2 mt-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>
+                  Girdiğiniz tutar {formatPeriodName(financialData)} Asgari Ücretin ({formatCurrency(dynamicMinWage)}) altındadır. 
+                  Tam zamanlı çalışıyorsanız lütfen kontrol ediniz. 
+                  (Part-time çalışanlar bu uyarıyı dikkate almayabilir.)
+                </span>
+              </p>
+            )}
 
             {/* Validation errors */}
             {dateError && (
@@ -1039,6 +1061,12 @@ function ResultsCard({ result, formValues }: { result: SeveranceResult; formValu
             {result.tenure.years} yıl, {result.tenure.months} ay, {result.tenure.days} gün
           </span>
         </div>
+        
+        {/* Period Indicator */}
+        <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-muted)] mt-2">
+          <Info className="w-3 h-3" />
+          <span>Hesaplama {result.periodName} verileriyle yapılmıştır.</span>
+        </div>
       </div>
 
       {/* Selection Instruction */}
@@ -1084,6 +1112,7 @@ function ResultsCard({ result, formValues }: { result: SeveranceResult; formValu
             { label: "Damga Vergisi", value: -result.noticeStampTax, isDeduction: true },
           ]}
           netAmount={result.noticeNet}
+          note={!formValues.cumulativeTaxBase ? "⚠️ Kümülatif Gelir Vergisi Matrahı girilmedi, hesaplama hatalı olabilir." : undefined}
         />
 
         {/* Yıllık İzin */}
@@ -1303,6 +1332,7 @@ interface SelectablePaymentCardProps {
   subtitle?: string;
   items: Array<{ label: string; value: number; isDeduction?: boolean; isExemption?: boolean }>;
   netAmount: number;
+  note?: string;
 }
 
 function SelectablePaymentCard({ 
@@ -1316,7 +1346,8 @@ function SelectablePaymentCard({
   badge, 
   subtitle, 
   items, 
-  netAmount 
+  netAmount,
+  note
 }: SelectablePaymentCardProps) {
   return (
     <div 
@@ -1391,6 +1422,13 @@ function SelectablePaymentCard({
           {formatCurrency(netAmount)}
         </span>
       </div>
+
+      {/* Warning Note */}
+      {note && (
+        <p className="text-xs text-amber-600 mt-2">
+          {note}
+        </p>
+      )}
     </div>
   );
 }

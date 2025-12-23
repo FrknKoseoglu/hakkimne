@@ -3,32 +3,40 @@
 import { useMemo } from "react";
 import { differenceInDays, differenceInMonths, differenceInYears } from "date-fns";
 import Big from "big.js";
+import { getFinancialData, FinancialPeriod, formatPeriodName } from "@/lib/financial-data";
 
 // ============================================
-// CONSTANTS - Turkish Labor Law (2025)
+// CONSTANTS - Turkish Labor Law (Static Rates)
 // ============================================
-const SEVERANCE_CEILING = 53919.68;
 const STAMP_TAX_RATE = 0.00759;
 const SGK_EMPLOYEE_RATE = 0.14;
 const UNEMPLOYMENT_RATE = 0.01;
 
-// 2025 Asgari Ücret
-const MINIMUM_WAGE_GROSS = 26005.50;
-// Asgari ücret gelir vergisi istisnası (aylık)
-// Matrah = 26005.50 - (26005.50 × 0.14) - (26005.50 × 0.01) = 22104.68
-// İstisna = 22104.68 × 0.15 = 3315.70
-const MIN_WAGE_TAXABLE = MINIMUM_WAGE_GROSS * (1 - SGK_EMPLOYEE_RATE - UNEMPLOYMENT_RATE);
-const MONTHLY_INCOME_TAX_EXEMPTION = MIN_WAGE_TAXABLE * 0.15; // ~3315.70 TL
-const MONTHLY_STAMP_TAX_EXEMPTION = MINIMUM_WAGE_GROSS * STAMP_TAX_RATE; // ~197.38 TL
-
-// Gelir Vergisi Dilimleri 2025
-const INCOME_TAX_BRACKETS = [
-  { limit: 158000, rate: 0.15 },
-  { limit: 330000, rate: 0.20 },
-  { limit: 800000, rate: 0.27 },
-  { limit: 4000000, rate: 0.35 },
-  { limit: Infinity, rate: 0.40 },
-];
+// ============================================
+// DYNAMIC FINANCIAL DATA HELPER
+// ============================================
+function getCalculationConstants(endDate: Date) {
+  const financialData = getFinancialData(endDate);
+  
+  const MINIMUM_WAGE_GROSS = financialData.minGrossWage;
+  const SEVERANCE_CEILING = financialData.severanceCeiling;
+  const INCOME_TAX_BRACKETS = financialData.taxBrackets;
+  
+  // Asgari ücret gelir vergisi istisnası (aylık)
+  const MIN_WAGE_TAXABLE = MINIMUM_WAGE_GROSS * (1 - SGK_EMPLOYEE_RATE - UNEMPLOYMENT_RATE);
+  const MONTHLY_INCOME_TAX_EXEMPTION = MIN_WAGE_TAXABLE * 0.15;
+  const MONTHLY_STAMP_TAX_EXEMPTION = MINIMUM_WAGE_GROSS * STAMP_TAX_RATE;
+  
+  return {
+    SEVERANCE_CEILING,
+    MINIMUM_WAGE_GROSS,
+    INCOME_TAX_BRACKETS,
+    MONTHLY_INCOME_TAX_EXEMPTION,
+    MONTHLY_STAMP_TAX_EXEMPTION,
+    financialPeriod: financialData,
+    periodName: formatPeriodName(financialData),
+  };
+}
 
 // ============================================
 // TYPE DEFINITIONS
@@ -118,6 +126,10 @@ export interface SeveranceResult {
   newCumulativeTaxBase: number;
   // Flags
   isLeaveApproximate: boolean; // İzin ücreti yaklaşık hesaplandı mı?
+  // Period Info
+  periodName: string; // e.g., "2024 2. Yarıyıl"
+  severanceCeiling: number;
+  minGrossWage: number;
 }
 
 // ============================================
@@ -136,7 +148,8 @@ function netToGross(netAmount: number, taxRate: number = 0.15): number {
  */
 function calculateIncomeTax(
   taxableAmount: number,
-  cumulativeBase: number
+  cumulativeBase: number,
+  taxBrackets: { limit: number; rate: number }[]
 ): { tax: Big; rate: number } {
   if (taxableAmount <= 0) {
     return { tax: new Big(0), rate: 0 };
@@ -145,7 +158,7 @@ function calculateIncomeTax(
   const totalAmount = cumulativeBase + taxableAmount;
   let applicableRate = 0.15;
 
-  for (const bracket of INCOME_TAX_BRACKETS) {
+  for (const bracket of taxBrackets) {
     if (totalAmount <= bracket.limit) {
       applicableRate = bracket.rate;
       break;
@@ -234,6 +247,15 @@ export function useSeveranceCalculator(input: SeveranceInput): SeveranceResult |
     if (!startDate || !endDate || grossSalary <= 0) return null;
     if (endDate <= startDate) return null;
 
+    // Get dynamic constants based on exit date
+    const {
+      SEVERANCE_CEILING,
+      INCOME_TAX_BRACKETS,
+      MONTHLY_INCOME_TAX_EXEMPTION,
+      MONTHLY_STAMP_TAX_EXEMPTION,
+      periodName,
+    } = getCalculationConstants(endDate);
+
     const tenure = calculateTenure(startDate, endDate);
     const { dressedWage, benefitsGross } = calculateDressedGrossWage(grossSalary, benefits);
 
@@ -273,7 +295,7 @@ export function useSeveranceCalculator(input: SeveranceInput): SeveranceResult |
     // Gelir vergisi matrahı = Brüt tutar (SGK kesintisi yok)
     const noticeTaxableAmount = noticeGross;
     
-    const noticeTax = calculateIncomeTax(noticeTaxableAmount.toNumber(), runningCumulativeBase.toNumber());
+    const noticeTax = calculateIncomeTax(noticeTaxableAmount.toNumber(), runningCumulativeBase.toNumber(), INCOME_TAX_BRACKETS);
     const noticeIncomeTaxBeforeExemption = noticeTax.tax;
     const noticeTaxRate = noticeTax.rate;
 
@@ -307,7 +329,7 @@ export function useSeveranceCalculator(input: SeveranceInput): SeveranceResult |
     const unusedLeaveUnemployment = unusedLeaveGross.times(UNEMPLOYMENT_RATE);
     const unusedLeaveTaxableAmount = unusedLeaveGross.minus(unusedLeaveSgk).minus(unusedLeaveUnemployment);
 
-    const unusedLeaveTax = calculateIncomeTax(unusedLeaveTaxableAmount.toNumber(), runningCumulativeBase.toNumber());
+    const unusedLeaveTax = calculateIncomeTax(unusedLeaveTaxableAmount.toNumber(), runningCumulativeBase.toNumber(), INCOME_TAX_BRACKETS);
     const unusedLeaveIncomeTaxBeforeExemption = unusedLeaveTax.tax;
     const unusedLeaveTaxRate = unusedLeaveTax.rate;
 
@@ -339,7 +361,7 @@ export function useSeveranceCalculator(input: SeveranceInput): SeveranceResult |
     const proRatedSalaryUnemployment = proRatedSalaryGross.times(UNEMPLOYMENT_RATE);
     const proRatedTaxableAmount = proRatedSalaryGross.minus(proRatedSalarySgk).minus(proRatedSalaryUnemployment);
 
-    const proRatedTax = calculateIncomeTax(proRatedTaxableAmount.toNumber(), runningCumulativeBase.toNumber());
+    const proRatedTax = calculateIncomeTax(proRatedTaxableAmount.toNumber(), runningCumulativeBase.toNumber(), INCOME_TAX_BRACKETS);
     const proRatedSalaryIncomeTaxBeforeExemption = proRatedTax.tax;
     const proRatedTaxRate = proRatedTax.rate;
 
@@ -429,6 +451,10 @@ export function useSeveranceCalculator(input: SeveranceInput): SeveranceResult |
       newCumulativeTaxBase: runningCumulativeBase.round(2).toNumber(),
       // Flags
       isLeaveApproximate,
+      // Period Info
+      periodName,
+      severanceCeiling: SEVERANCE_CEILING,
+      minGrossWage: getCalculationConstants(endDate).MINIMUM_WAGE_GROSS,
     };
   }, [input]);
 }
