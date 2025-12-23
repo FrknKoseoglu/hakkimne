@@ -125,9 +125,6 @@ export function SeveranceCalculator() {
     cumulativeTaxBase: 0,
   });
 
-  // Toggle: true = manual monthly entry, false = calculate from daily
-  const [useMonthlyGross, setUseMonthlyGross] = useState(true);
-
   const result = useSeveranceCalculator(calculatorInput);
 
   const { register, handleSubmit, formState: { errors }, watch, control, setValue } = useForm<FormData>({
@@ -153,11 +150,7 @@ export function SeveranceCalculator() {
   const watchedEndDate = watch("endDate");
   const watchedSalaryDay = watch("salaryDay");
   const watchedGrossSalary = watch("grossSalary");
-  const watchedAnnualBonus = watch("annualBonus");
   
-  // State for daily calculation mode
-  const [periodSalary, setPeriodSalary] = useState("");
-  const [additionalPayments, setAdditionalPayments] = useState("0");
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load from localStorage AFTER hydration (client-side only)
@@ -180,10 +173,6 @@ export function SeveranceCalculator() {
         if (data.otherBenefits) setValue("otherBenefits", data.otherBenefits);
         if (data.unusedLeaveDays) setValue("unusedLeaveDays", data.unusedLeaveDays);
         if (data.cumulativeTaxBase) setValue("cumulativeTaxBase", data.cumulativeTaxBase);
-        // Set other state
-        if (data.periodSalary) setPeriodSalary(data.periodSalary);
-        if (data.additionalPayments) setAdditionalPayments(data.additionalPayments);
-        if (data.useMonthlyGross !== undefined) setUseMonthlyGross(data.useMonthlyGross);
       }
     } catch (e) {
       console.error("Failed to load saved form data", e);
@@ -197,49 +186,13 @@ export function SeveranceCalculator() {
     if (!isHydrated) return;
     const dataToSave = {
       ...watchAllFields,
-      periodSalary,
-      additionalPayments,
-      useMonthlyGross,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-  }, [watchAllFields, periodSalary, additionalPayments, useMonthlyGross, isHydrated]);
+  }, [watchAllFields, isHydrated]);
 
-  // Auto-calculate worked days from endDate and salaryDay (same as proRatedDays in hook)
-  const calculatedWorkedDays = (() => {
-    if (!watchedEndDate || !watchedSalaryDay) return 0;
-    const endDate = new Date(watchedEndDate);
-    if (isNaN(endDate.getTime())) return 0;
-    
-    const salaryDay = parseInt(watchedSalaryDay) || 1;
-    const endDay = endDate.getDate();
-    
-    if (endDay > salaryDay) {
-      return endDay - salaryDay;
-    } else if (endDay < salaryDay) {
-      const lastDayPrevMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
-      return (lastDayPrevMonth - salaryDay) + endDay;
-    }
-    return 0;
-  })();
 
-  // Calculate monthly gross from daily values
-  const calculatedMonthlyGross = (() => {
-    if (useMonthlyGross) return null;
-    const days = calculatedWorkedDays;
-    const salary = parseTurkishNumber(periodSalary);
-    const additional = parseTurkishNumber(additionalPayments);
-    
-    if (days <= 0 || salary <= 0) return null;
-    
-    const dailyRate = salary / days;
-    const monthlyGross = (dailyRate * 30) + additional;
-    return monthlyGross;
-  })();
-
-  // Sync calculated gross to form when it changes
-  const effectiveGrossSalary = useMonthlyGross 
-    ? parseTurkishNumber(watchedGrossSalary || "") 
-    : (calculatedMonthlyGross || 0);
+  // Get gross salary from form
+  const effectiveGrossSalary = parseTurkishNumber(watchedGrossSalary || "");
 
   const salaryDayWarning = (() => {
     if (!watchedEndDate || !watchedSalaryDay) return null;
@@ -288,30 +241,11 @@ export function SeveranceCalculator() {
       return;
     }
 
-    // Conditional validation based on checkbox state
-    if (useMonthlyGross) {
-      // When checkbox is checked, require grossSalary
-      const grossSalaryValue = parseTurkishNumber(data.grossSalary || "");
-      if (grossSalaryValue <= 0) {
-        setSalaryError("Aylık brüt maaş giriniz");
-        return;
-      }
-    } else {
-      // When checkbox is unchecked, require periodSalary, additionalPayments, and valid worked days
-      if (calculatedWorkedDays <= 0) {
-        setSalaryError("Çıkış tarihi ve maaş gününü giriniz");
-        return;
-      }
-      const periodSalaryValue = parseTurkishNumber(periodSalary);
-      const additionalPaymentsValue = parseTurkishNumber(additionalPayments);
-      if (periodSalaryValue <= 0) {
-        setSalaryError("Dönem brüt ücreti giriniz");
-        return;
-      }
-      if (additionalPaymentsValue < 0) {
-        setSalaryError("Ek toplam ödemeler geçersiz");
-        return;
-      }
+    // Validate grossSalary
+    const grossSalaryValue = parseTurkishNumber(data.grossSalary || "");
+    if (grossSalaryValue <= 0) {
+      setSalaryError("Aylık brüt maaş giriniz");
+      return;
     }
 
     setCalculatorInput({
@@ -348,8 +282,8 @@ export function SeveranceCalculator() {
         
         <div className="p-6 md:p-8 space-y-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Dates & Salary Day - 3 columns */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Dates - 2 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="startDate" className="text-sm font-medium text-[var(--text-main)]">
                   İşe Giriş Tarihi
@@ -383,7 +317,43 @@ export function SeveranceCalculator() {
                 </div>
                 {errors.endDate && <p className="text-sm text-red-500">{errors.endDate.message}</p>}
               </div>
-              
+            </div>
+
+            {/* Date validation error */}
+            {dateError && (
+              <p className="text-sm text-red-500 flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                {dateError}
+              </p>
+            )}
+
+            {/* Brüt Maaş */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="grossSalary" className="text-sm font-medium text-[var(--text-main)]">
+                  Aylık Brüt Maaş
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
+                    ₺
+                  </span>
+                  <Controller
+                    name="grossSalary"
+                    control={control}
+                    render={({ field }) => (
+                      <CurrencyInput
+                        id="grossSalary"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        placeholder="Aylık brüt maaş"
+                        className="h-12 pl-9 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                      />
+                    )}
+                  />
+                </div>
+                {errors.grossSalary && <p className="text-sm text-red-500">{errors.grossSalary.message}</p>}
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="salaryDay" className="text-sm font-medium text-[var(--text-main)]">
                   Maaş Günü
@@ -410,127 +380,13 @@ export function SeveranceCalculator() {
               </div>
             </div>
 
-            {/* Date validation error */}
-            {dateError && (
+            {/* Salary validation error */}
+            {salaryError && (
               <p className="text-sm text-red-500 flex items-center gap-1">
                 <AlertCircle className="w-4 h-4" />
-                {dateError}
+                {salaryError}
               </p>
             )}
-
-            {/* Brüt Maaş Section with Toggle */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium text-[var(--text-main)]">
-                  Brüt Maaş
-                </Label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={useMonthlyGross}
-                    onChange={(e) => setUseMonthlyGross(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 border-[var(--border-light)] rounded focus:ring-blue-500 bg-[var(--background-light)]"
-                  />
-                  <span className="text-sm text-[var(--text-muted)]">
-                    Aylık brüt ücreti doğrudan gireceğim
-                  </span>
-                </label>
-              </div>
-
-              {useMonthlyGross ? (
-                // Manual monthly entry
-                <div className="relative max-w-md">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
-                    ₺
-                  </span>
-                  <Controller
-                    name="grossSalary"
-                    control={control}
-                    render={({ field }) => (
-                      <CurrencyInput
-                        id="grossSalary"
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                        placeholder="Aylık brüt maaş"
-                        className="h-12 pl-9 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                      />
-                    )}
-                  />
-                  {errors.grossSalary && <p className="text-sm text-red-500 mt-1">{errors.grossSalary.message}</p>}
-                </div>
-              ) : (
-                // Calculate from daily
-                <div className="space-y-4 p-4 bg-[var(--muted)] rounded-lg border border-[var(--border-light)]">
-                  {/* Info about worked days */}
-                  {calculatedWorkedDays > 0 && (
-                    <div className="flex items-center gap-2 text-sm text-[var(--text-muted)] bg-[var(--card)] border border-[var(--border-light)] rounded-lg px-3 py-2">
-                      <Info className="w-5 h-5 text-blue-500" />
-                      <span>
-                        Çıkış tarihi ve maaş gününe göre <strong>{calculatedWorkedDays} gün</strong> çalıştınız.
-                      </span>
-                    </div>
-                  )}
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-[var(--text-muted)]">
-                        {calculatedWorkedDays} Günlük Dönem Brüt Ücreti
-                      </Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium">
-                          ₺
-                        </span>
-                        <CurrencyInput
-                          value={periodSalary}
-                          onChange={setPeriodSalary}
-                          placeholder="0"
-                          className="h-10 pl-8 pr-3 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] text-[var(--text-main)] text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-medium text-[var(--text-muted)]">
-                        Ek Toplam Ödemeler
-                      </Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium">
-                          ₺
-                        </span>
-                        <CurrencyInput
-                          value={additionalPayments}
-                          onChange={setAdditionalPayments}
-                          placeholder="0"
-                          className="h-10 pl-8 pr-3 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] text-[var(--text-main)] text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Calculated Result */}
-                  {calculatedMonthlyGross !== null && (
-                    <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-                      <div className="text-sm text-blue-700 dark:text-blue-300">
-                        <span className="font-medium">Hesaplanan Aylık Brüt:</span>
-                        <span className="text-xs ml-2 text-blue-600 dark:text-blue-400">
-                          (₺{formatTurkishNumber(periodSalary)} ÷ {calculatedWorkedDays} gün) × 30 + ₺{formatTurkishNumber(additionalPayments)}
-                        </span>
-                      </div>
-                      <span className="text-lg font-bold text-blue-700 dark:text-blue-300">
-                        {formatCurrency(calculatedMonthlyGross)}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Salary validation error */}
-              {salaryError && (
-                <p className="text-sm text-red-500 flex items-center gap-1">
-                  <AlertCircle className="w-4 h-4" />
-                  {salaryError}
-                </p>
-              )}
-            </div>
 
             {/* Annual Bonus & Leave Days */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
