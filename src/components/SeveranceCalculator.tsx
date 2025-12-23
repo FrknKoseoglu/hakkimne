@@ -266,10 +266,27 @@ export function SeveranceCalculator() {
 
   // Custom validation error for salary fields
   const [salaryError, setSalaryError] = useState<string | null>(null);
+  // Custom validation error for date fields
+  const [dateError, setDateError] = useState<string | null>(null);
 
   const onSubmit = (data: FormData) => {
-    // Clear previous salary error
+    // Clear previous errors
     setSalaryError(null);
+    setDateError(null);
+
+    // Date validation
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
+    
+    if (startDate.getTime() === endDate.getTime()) {
+      setDateError("İşe giriş ve çıkış tarihi aynı olamaz");
+      return;
+    }
+    
+    if (startDate > endDate) {
+      setDateError("İşe giriş tarihi, çıkış tarihinden büyük olamaz");
+      return;
+    }
 
     // Conditional validation based on checkbox state
     if (useMonthlyGross) {
@@ -392,6 +409,14 @@ export function SeveranceCalculator() {
                 {errors.salaryDay && <p className="text-sm text-red-500">{errors.salaryDay.message}</p>}
               </div>
             </div>
+
+            {/* Date validation error */}
+            {dateError && (
+              <p className="text-sm text-red-500 flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                {dateError}
+              </p>
+            )}
 
             {/* Brüt Maaş Section with Toggle */}
             <div className="space-y-4">
