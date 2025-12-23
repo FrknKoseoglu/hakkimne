@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { SeveranceCalculator } from "@/components/SeveranceCalculator";
 import { Navbar } from "@/components/Navbar";
+import { ShieldCheck } from "lucide-react";
 
 export default function Home() {
   return (
@@ -108,6 +109,25 @@ export default function Home() {
               <p className="text-sm text-blue-700 dark:text-blue-400">
                 Ocak-Haziran 2025 dönemi için kıdem tazminatı tavanı <strong>53.919,68 TL</strong> olarak güncellenmiştir.
                 Maaşınız bu tutarın üzerindeyse, kıdem tazminatınız tavan üzerinden hesaplanır.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Privacy & Data Security Section */}
+      <section className="mx-auto max-w-[960px] px-4 py-6">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-green-800 dark:text-green-300 text-lg mb-2">
+                🔒 Gizlilik ve Veri Güvenliği
+              </h3>
+              <p className="text-green-700 dark:text-green-400 text-sm leading-relaxed">
+                Hakkım Ne? üzerinde yaptığınız tüm hesaplamalar, tamamen <strong>kendi cihazınızda (tarayıcınızda)</strong> gerçekleşir. 
+                Girdiğiniz maaş, tarih ve tazminat bilgileri sunucularımıza gönderilmez, veritabanlarımızda saklanmaz ve 3. şahıslarla paylaşılmaz. 
+                Hesaplamalarınızı güvenle yapabilirsiniz.
               </p>
             </div>
           </div>
