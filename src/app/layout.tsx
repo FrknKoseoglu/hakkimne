@@ -71,6 +71,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  other: {
+    coinzilla: "b672b519004f109cd569cbffc3c9d548",
+  },
 };
 
 export default function RootLayout({
