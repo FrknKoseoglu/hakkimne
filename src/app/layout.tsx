@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
@@ -84,6 +85,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased bg-[var(--background-light)] text-[var(--text-main)]`}>
         <ThemeProvider>
           {children}
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
