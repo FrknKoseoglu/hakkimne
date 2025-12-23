@@ -1,24 +1,5 @@
 import { SeveranceCalculator } from "@/components/SeveranceCalculator";
-
-function Navbar() {
-  return (
-    <nav className="sticky top-0 z-50 h-16 border-b border-[var(--border-light)] bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-[960px] items-center justify-between px-4">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center size-9 rounded-lg bg-blue-100 text-[var(--primary)]">
-            <span className="material-symbols-outlined text-xl">calculate</span>
-          </div>
-          <h1 className="text-xl font-bold tracking-tight text-[var(--text-main)]">
-            Hakkım Ne?
-          </h1>
-        </div>
-        <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-200">
-          2024 Güncel
-        </span>
-      </div>
-    </nav>
-  );
-}
+import { Navbar } from "@/components/Navbar";
 
 export default function Home() {
   return (
@@ -74,7 +55,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-6 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-white/50">
+      <footer className="py-6 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-[var(--card)]/50">
         <div className="mx-auto max-w-[960px] px-4">
           <p className="mb-1">© 2024 Hakkım Ne? - Tüm hakları saklıdır.</p>
           <p className="text-xs">

@@ -109,18 +109,19 @@
 .dark {
   --primary: #3b82f6;
   --primary-foreground: #ffffff;
-  --background: #111621;
-  --background-light: #111621;
+  --background: #020617; /* slate-950 */
+  --background-light: #020617;
   --foreground: #f8fafc;
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --text-muted: #94a3b8; /* slate-400 */
+  --border-light: #334155; /* slate-700 - more visible */
   
   /* Card */
-  --card: #1a202c;
+  --card: #0f172a; /* slate-900 */
   --card-foreground: #f8fafc;
   
   /* Popover */
-  --popover: #1a202c;
+  --popover: #0f172a;
   --popover-foreground: #f8fafc;
   
   /* Secondary */
@@ -139,8 +140,8 @@
   --destructive: #f87171;
   
   /* Border & Input */
-  --border: #2a3241;
-  --input: #2a3241;
+  --border: #1e293b;
+  --input: #1e293b;
   --ring: #3b82f6;
   
   /* Charts */
@@ -151,13 +152,13 @@
   --chart-5: #f87171;
   
   /* Sidebar */
-  --sidebar: #1a202c;
+  --sidebar: #0f172a;
   --sidebar-foreground: #f8fafc;
   --sidebar-primary: #3b82f6;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #1e3a5f;
   --sidebar-accent-foreground: #60a5fa;
-  --sidebar-border: #2a3241;
+  --sidebar-border: #1e293b;
   --sidebar-ring: #3b82f6;
 }
 
@@ -177,4 +178,12 @@
     'wght' 400,
     'GRAD' 0,
     'opsz' 24;
+}
+
+/* Dark mode native input color scheme */
+.dark input[type="date"],
+.dark input[type="datetime-local"],
+.dark input[type="time"],
+.dark input[type="number"] {
+  color-scheme: dark;
 }
