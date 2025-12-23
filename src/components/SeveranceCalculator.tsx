@@ -32,7 +32,7 @@ const formSchema = z.object({
   startDate: z.string().min(1, "Başlangıç tarihi gerekli"),
   endDate: z.string().min(1, "Bitiş tarihi gerekli"),
   grossSalary: z.string().optional(),
-  salaryDay: z.string().optional(),
+  salaryDay: z.string().min(1, "Maaş günü gerekli"),
   foodAllowance: z.string().optional(),
   transportAllowance: z.string().optional(),
   healthInsurance: z.string().optional(),
@@ -126,7 +126,7 @@ export function SeveranceCalculator() {
   });
 
   // Toggle: true = manual monthly entry, false = calculate from daily
-  const [useMonthlyGross, setUseMonthlyGross] = useState(false);
+  const [useMonthlyGross, setUseMonthlyGross] = useState(true);
 
   const result = useSeveranceCalculator(calculatorInput);
 
@@ -136,7 +136,7 @@ export function SeveranceCalculator() {
       startDate: "",
       endDate: "",
       grossSalary: "",
-      salaryDay: "",
+      salaryDay: "1",
       foodAllowance: "",
       transportAllowance: "",
       healthInsurance: "",
@@ -280,10 +280,19 @@ export function SeveranceCalculator() {
         return;
       }
     } else {
-      // When checkbox is unchecked, require periodSalary
+      // When checkbox is unchecked, require periodSalary, additionalPayments, and valid worked days
+      if (calculatedWorkedDays <= 0) {
+        setSalaryError("Çıkış tarihi ve maaş gününü giriniz");
+        return;
+      }
       const periodSalaryValue = parseTurkishNumber(periodSalary);
+      const additionalPaymentsValue = parseTurkishNumber(additionalPayments);
       if (periodSalaryValue <= 0) {
         setSalaryError("Dönem brüt ücreti giriniz");
+        return;
+      }
+      if (additionalPaymentsValue < 0) {
+        setSalaryError("Ek toplam ödemeler geçersiz");
         return;
       }
     }
@@ -380,6 +389,7 @@ export function SeveranceCalculator() {
                     {salaryDayWarning}
                   </p>
                 )}
+                {errors.salaryDay && <p className="text-sm text-red-500">{errors.salaryDay.message}</p>}
               </div>
             </div>
 
