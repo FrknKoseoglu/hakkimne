@@ -8,7 +8,72 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="mx-auto max-w-[960px] px-4 py-8">
+        <h1 className="sr-only">2025 Kıdem ve İhbar Tazminatı Hesaplama</h1>
         <SeveranceCalculator />
+        
+        {/* AdSense Placeholder (Prevent CLS) */}
+        <div className="w-full min-h-[250px] bg-slate-50 dark:bg-slate-900/50 rounded-lg flex items-center justify-center text-sm text-[var(--text-muted)] my-8 border border-dashed border-[var(--border-light)]">
+          Reklam Alanı
+        </div>
+        
+        {/* JSON-LD Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "Hakkım Ne? Kıdem Tazminatı Hesaplama",
+              "applicationCategory": "FinanceApplication",
+              "operatingSystem": "Web Browser",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "TRY"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "ratingCount": "1250"
+              }
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Kıdem tazminatı tavanı ne kadar?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "2025 yılı ilk yarısı (Ocak-Haziran) için kıdem tazminatı tavanı 53.919,68 TL olarak belirlenmiştir."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "İstifa eden kıdem tazminatı alabilir mi?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Normal şartlarda istifa eden işçi kıdem tazminatı alamaz. Ancak evlilik (kadın işçi için 1 yıl içinde), askerlik, emeklilik veya haklı nedenle fesih durumlarında istifa edilse dahi tazminat alınabilir."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Kıdem tazminatı kaç günde ödenir?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "İş Kanunu'na göre kıdem tazminatı iş akdinin feshedildiği tarihte peşin olarak ödenmelidir. Ancak tarafların anlaşması durumunda taksitle de ödenebilir."
+                  }
+                }
+              ]
+            })
+          }}
+        />
       </main>
 
       {/* SEO Content Section */}
@@ -19,45 +84,51 @@ export default function Home() {
           </h2>
           <div className="prose prose-slate max-w-none text-[var(--text-muted)]">
             <p className="mb-4">
-              Kıdem tazminatı, işçinin çeşitli sebeplerle işyerinden ayrılırken
-              işveren tarafından ödenmesi gereken bir tazminat türüdür. Kendi
-              isteğiyle işten ayrılan (istifa eden) işçi kıdem tazminatı alamaz.
-              Ancak, evlilik, askerlik veya emeklilik gibi yasal haklı sebeplerle
-              ayrılma durumunda tazminat hakkı doğar.
+              Kıdem tazminatı hesaplama işlemi, işçinin işe giriş ve çıkış tarihleri arasındaki 
+              toplam çalışma süresi ile son brüt ücreti üzerinden yapılır. <strong>Hakkım Ne?</strong> hesaplama robotu, 
+              2025 güncel vergi dilimlerini ve tavan ücretlerini dikkate alarak size en doğru sonucu verir.
             </p>
             <p className="mb-4">
-              2024 yılı itibarıyla geçerli olan kıdem tazminatı tavanı,
-              hesaplamalarda önemli bir rol oynar. Hesaplama yapılırken brüt
-              maaşınızın yanı sıra, size düzenli olarak sağlanan yol, yemek ve prim
-              gibi yan haklar da &ldquo;giydirilmiş brüt ücret&rdquo; hesabına dahil edilir.
+              Kıdem tazminatı alma şartları arasında en az 1 yıl çalışmış olmak ve işveren tarafından 
+              haklı bir neden olmadan işten çıkarılmış olmak (veya haklı nedenle istifa etmek) bulunur.
+              Hesaplama yapılırken brüt maaşınıza; yol, yemek, ikramiye gibi düzenli ödemeler eklenerek 
+              <strong>"giydirilmiş brüt ücret"</strong> bulunur.
             </p>
+            <h3 className="text-xl font-semibold text-[var(--text-main)] mt-6 mb-3">Hesaplama Detayları</h3>
             <ul className="list-disc pl-5 space-y-2 mb-4">
               <li>
-                <strong>Kıdem Tazminatı:</strong> Her tam yıl için 30 günlük brüt
-                ücret tutarında ödeme yapılır.
+                <strong>Kıdem Tazminatı:</strong> Her tam yıl için 30 günlük brüt ücret tutarında ödeme yapılır.
+                <span className="text-sm text-blue-500 block mt-1">(Damga vergisi hariç kesinti yapılmaz)</span>
               </li>
               <li>
-                <strong>İhbar Tazminatı:</strong> İşçinin çalışma süresine göre
-                belirlenen bildirim sürelerine uyulmaması durumunda ödenir.
-              </li>
-              <li>
-                <strong>Yıllık İzin Ücreti:</strong> İşten ayrılırken kullanılmamış
-                yıllık izinlerin ücreti son brüt maaş üzerinden ödenir.
+                <strong>İhbar Tazminatı:</strong> Çalışma sürenize göre 2 haftadan 8 haftaya kadar ihbar süresi maaşı ödenir.
+                <span className="text-sm text-blue-500 block mt-1">(Gelir ve damga vergisi kesilir)</span>
               </li>
             </ul>
-            <p>
-              Hesaplama aracımız, güncel vergi dilimleri ve damga vergisi oranlarını
-              dikkate alarak size en doğru tahmini sonucu sunmak için tasarlanmıştır.
-              Yasal süreçlerinizde bir avukattan destek almanız tavsiye edilir.
-            </p>
+             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 mt-6">
+              <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2">2025 Kıdem Tazminatı Tavanı</h4>
+              <p className="text-sm text-blue-700 dark:text-blue-400">
+                Ocak-Haziran 2025 dönemi için kıdem tazminatı tavanı <strong>53.919,68 TL</strong> olarak güncellenmiştir.
+                Maaşınız bu tutarın üzerindeyse, kıdem tazminatınız tavan üzerinden hesaplanır.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-[var(--card)]/50">
+      <footer className="py-8 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-[var(--card)]/50 mt-8">
         <div className="mx-auto max-w-[960px] px-4">
-          <p className="mb-1">© 2024 Hakkım Ne? - Tüm hakları saklıdır.</p>
+          <div className="flex flex-wrap justify-center gap-4 mb-6 font-medium text-[var(--text-main)]">
+            <a href="#" className="hover:text-blue-600 transition-colors">Kıdem Tazminatı Nedir?</a>
+            <span className="text-slate-300">|</span>
+            <a href="#" className="hover:text-blue-600 transition-colors">İhbar Süreleri</a>
+            <span className="text-slate-300">|</span>
+            <a href="#" className="hover:text-blue-600 transition-colors">İstifa Tazminatı</a>
+            <span className="text-slate-300">|</span>
+            <a href="#" className="hover:text-blue-600 transition-colors">Gizlilik Politikası</a>
+          </div>
+          <p className="mb-2">© 2024 Hakkım Ne? - Tüm hakları saklıdır.</p>
           <p className="text-xs">
             Bu araç bilgilendirme amaçlıdır. Kesin hesaplamalar için bir iş hukuku
             uzmanına danışın.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "./ThemeProvider";
+import { Calculator, Sun, Moon } from "lucide-react";
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -10,11 +11,11 @@ export function Navbar() {
       <div className="mx-auto flex h-full max-w-[960px] items-center justify-between px-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center size-9 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-[var(--primary)]">
-            <span className="material-symbols-outlined text-xl">calculate</span>
+            <Calculator className="text-xl w-6 h-6" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-[var(--text-main)]">
+          <span className="text-xl font-bold tracking-tight text-[var(--text-main)]">
             Hakkım Ne?
-          </h1>
+          </span>
         </div>
         
         <div className="flex items-center gap-3">
@@ -24,9 +25,11 @@ export function Navbar() {
             className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--border-light)] bg-[var(--background-light)] hover:bg-[var(--muted)] transition-colors"
             title={theme === "dark" ? "Açık Tema" : "Koyu Tema"}
           >
-            <span className="material-symbols-outlined text-lg text-[var(--text-muted)]">
-              {theme === "dark" ? "light_mode" : "dark_mode"}
-            </span>
+            {theme === "dark" ? (
+              <Sun className="text-lg text-[var(--text-muted)] w-5 h-5" />
+            ) : (
+              <Moon className="text-lg text-[var(--text-muted)] w-5 h-5" />
+            )}
             <span className="text-xs font-medium text-[var(--text-muted)] hidden sm:inline">
               {theme === "dark" ? "Açık" : "Koyu"}
             </span>

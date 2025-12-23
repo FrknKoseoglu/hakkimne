@@ -9,6 +9,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSeveranceCalculator, SeveranceInput, SeveranceResult } from "@/hooks/useSeveranceCalculator";
+import { 
+  Calendar, 
+  CalendarDays, 
+  AlertTriangle, 
+  Info, 
+  Calculator, 
+  PlusCircle, 
+  Sliders, 
+  Palmtree, 
+  Briefcase, 
+  Wallet, 
+  Receipt, 
+  Clock, 
+  TrendingUp, 
+  TrendingDown, 
+  Check, 
+  AlertCircle 
+} from "lucide-react";
 
 const formSchema = z.object({
   startDate: z.string().min(1, "Başlangıç tarihi gerekli"),
@@ -288,9 +306,7 @@ export function SeveranceCalculator() {
                   İşe Giriş Tarihi
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] material-symbols-outlined text-xl">
-                    calendar_month
-                  </span>
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
                   <Input
                     id="startDate"
                     type="date"
@@ -306,9 +322,7 @@ export function SeveranceCalculator() {
                   İşten Çıkış Tarihi
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] material-symbols-outlined text-xl">
-                    calendar_month
-                  </span>
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
                   <Input
                     id="endDate"
                     type="date"
@@ -324,9 +338,7 @@ export function SeveranceCalculator() {
                   Maaş Günü
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] material-symbols-outlined text-xl">
-                    today
-                  </span>
+                  <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
                   <Input
                     id="salaryDay"
                     type="number"
@@ -339,7 +351,7 @@ export function SeveranceCalculator() {
                 </div>
                 {salaryDayWarning && (
                   <p className="text-sm text-amber-600 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-base">warning</span>
+                    <AlertTriangle className="w-4 h-4" />
                     {salaryDayWarning}
                   </p>
                 )}
@@ -392,7 +404,7 @@ export function SeveranceCalculator() {
                   {/* Info about worked days */}
                   {calculatedWorkedDays > 0 && (
                     <div className="flex items-center gap-2 text-sm text-[var(--text-muted)] bg-[var(--card)] border border-[var(--border-light)] rounded-lg px-3 py-2">
-                      <span className="material-symbols-outlined text-lg text-blue-500">info</span>
+                      <Info className="w-5 h-5 text-blue-500" />
                       <span>
                         Çıkış tarihi ve maaş gününe göre <strong>{calculatedWorkedDays} gün</strong> çalıştınız.
                       </span>
@@ -483,9 +495,7 @@ export function SeveranceCalculator() {
                   Kullanılmayan İzin Günü
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] material-symbols-outlined text-xl">
-                    beach_access
-                  </span>
+                  <Palmtree className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
                   <Input
                     id="unusedLeaveDays"
                     type="number"
@@ -502,7 +512,7 @@ export function SeveranceCalculator() {
             {/* Yan Haklar Section */}
             <div className="pt-4 border-t border-[var(--border-light)]">
               <h3 className="text-lg font-semibold text-[var(--text-main)] mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[var(--primary)]">add_circle</span>
+                <PlusCircle className="text-[var(--primary)] w-5 h-5" />
                 Aylık Düzenli Yan Haklar (Net)
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -638,7 +648,7 @@ export function SeveranceCalculator() {
             {/* Advanced Settings */}
             <div className="pt-4 border-t border-[var(--border-light)]">
               <h3 className="text-lg font-semibold text-[var(--text-main)] mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[var(--primary)]">tune</span>
+                <Sliders className="text-[var(--primary)] w-5 h-5" />
                 Gelişmiş Ayarlar
               </h3>
               <div className="space-y-2">
@@ -663,8 +673,8 @@ export function SeveranceCalculator() {
                     )}
                   />
                 </div>
-                <p className="text-xs text-[var(--text-muted)] mt-2">
-                  <span className="material-symbols-outlined text-sm align-middle mr-1">info</span>
+                <p className="text-xs text-[var(--text-muted)] mt-2 flex items-center gap-1">
+                  <Info className="w-4 h-4" />
                   E-Devlet'te "SGK Tescil ve Hizmet Dökümü" hizmetinden işten çıkış yılına ait tablodaki "Genel Toplam" kısmındaki ücreti giriniz.
                 </p>
               </div>
@@ -675,7 +685,7 @@ export function SeveranceCalculator() {
               type="submit"
               className="w-full h-14 bg-[#2463eb] hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 text-lg transition-transform active:scale-[0.98]"
             >
-              <span className="material-symbols-outlined">calculate</span>
+              <Calculator className="w-5 h-5" />
               HESAPLA
             </Button>
           </form>
@@ -842,9 +852,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
                     priceChange === 'up' ? 'text-emerald-500' : 'text-red-500'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-xl">
-                    {priceChange === 'up' ? 'trending_up' : 'trending_down'}
-                  </span>
+                  {priceChange === 'up' ? <TrendingUp className="text-xl" /> : <TrendingDown className="text-xl" />}
                 </span>
               )}
               <span 
@@ -864,7 +872,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
 
         {/* Tenure Info */}
         <div className="flex items-center justify-center gap-2 text-sm text-[var(--text-muted)] mt-6 pt-4 border-t border-blue-100 dark:border-blue-900/50">
-          <span className="material-symbols-outlined text-lg">schedule</span>
+          <Clock className="text-lg w-5 h-5" />
           <span>Çalışma Süresi:</span>
           <span className="font-semibold text-[var(--text-main)]">
             {result.tenure.years} yıl, {result.tenure.months} ay, {result.tenure.days} gün
@@ -886,7 +894,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
           selected={selectedPayments.severance}
           onToggle={() => togglePayment('severance')}
           disabled={!result.severanceEligible}
-          icon="work_history"
+          icon={<Briefcase className="text-xl" />}
           iconBgColor="bg-blue-50"
           iconTextColor="text-blue-600"
           title="Kıdem Tazminatı"
@@ -903,7 +911,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
         <SelectablePaymentCard
           selected={selectedPayments.notice}
           onToggle={() => togglePayment('notice')}
-          icon="warning"
+          icon={<AlertTriangle className="text-xl" />}
           iconBgColor="bg-orange-50"
           iconTextColor="text-orange-600"
           title="İhbar Tazminatı"
@@ -922,7 +930,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
           <SelectablePaymentCard
             selected={selectedPayments.unusedLeave}
             onToggle={() => togglePayment('unusedLeave')}
-            icon="beach_access"
+            icon={<Palmtree className="text-xl" />}
             iconBgColor="bg-emerald-50"
             iconTextColor="text-emerald-600"
             title="Yıllık İzin Ücreti"
@@ -943,7 +951,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
           <SelectablePaymentCard
             selected={selectedPayments.proRated}
             onToggle={() => togglePayment('proRated')}
-            icon="account_balance_wallet"
+            icon={<Wallet className="text-xl" />}
             iconBgColor="bg-purple-50"
             iconTextColor="text-purple-600"
             title="Hak Edilen Maaş"
@@ -965,7 +973,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
       <div className="bg-[var(--card)] rounded-xl border border-[var(--border-light)] p-5 shadow-sm">
         <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[var(--border-light)]">
           <div className="p-2 bg-[var(--muted)] rounded-lg text-[var(--text-muted)]">
-            <span className="material-symbols-outlined text-xl">receipt_long</span>
+            <Receipt className="text-xl w-6 h-6" />
           </div>
           <h3 className="font-bold text-lg text-[var(--text-main)]">Yasal Kesintiler Özeti</h3>
         </div>
@@ -1008,7 +1016,7 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
 }
 
 interface PaymentCardProps {
-  icon: string;
+  icon: React.ReactNode;
   iconBgColor: string;
   iconTextColor: string;
   title: string;
@@ -1035,7 +1043,7 @@ function PaymentCard({
       {/* Header */}
       <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--border-light)]">
         <div className={`p-2 rounded-lg ${iconBgColor} ${iconTextColor}`}>
-          <span className="material-symbols-outlined text-xl">{icon}</span>
+          {icon}
         </div>
         <div className="flex-1">
           <h3 className="font-bold text-lg text-[var(--text-main)]">{title}</h3>
@@ -1082,7 +1090,7 @@ interface SelectablePaymentCardProps {
   selected: boolean;
   onToggle: () => void;
   disabled?: boolean;
-  icon: string;
+  icon: React.ReactNode;
   iconBgColor: string;
   iconTextColor: string;
   title: string;
@@ -1131,14 +1139,14 @@ function SelectablePaymentCard({
         }}
       >
         {selected && !disabled && (
-          <span className="material-symbols-outlined text-white text-sm font-bold">check</span>
+          <Check className="text-white w-4 h-4" strokeWidth={3} />
         )}
       </div>
       
       {/* Header */}
       <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--border-light)]">
         <div className={`p-2 rounded-lg ${iconBgColor} ${iconTextColor}`}>
-          <span className="material-symbols-outlined text-xl">{icon}</span>
+          {icon}
         </div>
         <div className="flex-1">
           <h3 className="font-bold text-lg text-[var(--text-main)]">{title}</h3>
