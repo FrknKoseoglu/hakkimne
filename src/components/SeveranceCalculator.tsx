@@ -4,10 +4,18 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useSeveranceCalculator, SeveranceInput, SeveranceResult } from "@/hooks/useSeveranceCalculator";
 import { 
   Calendar, 
@@ -25,8 +33,13 @@ import {
   TrendingUp, 
   TrendingDown, 
   Check, 
-  AlertCircle 
+  AlertCircle,
+  Share2,
+  MessageCircle,
+  Twitter,
+  Link
 } from "lucide-react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   startDate: z.string().min(1, "Başlangıç tarihi gerekli"),
@@ -83,6 +96,28 @@ function parseTurkishNumber(value: string): number {
   // Remove dots (thousand separator) and replace comma with dot for parsing
   const normalized = value.replace(/\./g, "").replace(",", ".");
   return parseFloat(normalized) || 0;
+}
+
+// Generate shareable URL with all form data
+function generateShareUrl(values: FormData): string {
+  const params = new URLSearchParams();
+  
+  if (values.startDate) params.set('start', values.startDate);
+  if (values.endDate) params.set('end', values.endDate);
+  if (values.grossSalary) params.set('salary', values.grossSalary);
+  if (values.salaryDay) params.set('salaryDay', values.salaryDay);
+  if (values.foodAllowance) params.set('food', values.foodAllowance);
+  if (values.transportAllowance) params.set('transport', values.transportAllowance);
+  if (values.healthInsurance) params.set('health', values.healthInsurance);
+  if (values.fuelAllowance) params.set('fuel', values.fuelAllowance);
+  if (values.childAllowance) params.set('child', values.childAllowance);
+  if (values.otherBenefits) params.set('other', values.otherBenefits);
+  if (values.annualBonus) params.set('bonus', values.annualBonus);
+  if (values.unusedLeaveDays) params.set('leave', values.unusedLeaveDays);
+  if (values.cumulativeTaxBase) params.set('taxBase', values.cumulativeTaxBase);
+  
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://hakkimne.com';
+  return `${baseUrl}/?${params.toString()}`;
 }
 
 interface CurrencyInputProps {
@@ -152,6 +187,8 @@ export function SeveranceCalculator() {
   const watchedGrossSalary = watch("grossSalary");
   
   const [isHydrated, setIsHydrated] = useState(false);
+  const searchParams = useSearchParams();
+  const hasTriggeredAutoCalc = useRef(false);
 
   // Load from localStorage AFTER hydration (client-side only)
   useEffect(() => {
@@ -179,6 +216,53 @@ export function SeveranceCalculator() {
     }
     setIsHydrated(true);
   }, [setValue]);
+
+  // URL Hydration: Read query params and auto-fill form
+  useEffect(() => {
+    if (!isHydrated || !searchParams) return;
+    
+    const start = searchParams.get('start');
+    const end = searchParams.get('end');
+    const salary = searchParams.get('salary');
+    const salaryDay = searchParams.get('salaryDay');
+    const food = searchParams.get('food');
+    const transport = searchParams.get('transport');
+    const health = searchParams.get('health');
+    const fuel = searchParams.get('fuel');
+    const child = searchParams.get('child');
+    const other = searchParams.get('other');
+    const bonus = searchParams.get('bonus');
+    const leave = searchParams.get('leave');
+    const taxBase = searchParams.get('taxBase');
+    
+    // Check if we have any params
+    const hasParams = start || end || salary;
+    
+    if (hasParams) {
+      // Populate form with URL params
+      if (start) setValue("startDate", start);
+      if (end) setValue("endDate", end);
+      if (salary) setValue("grossSalary", salary);
+      if (salaryDay) setValue("salaryDay", salaryDay);
+      if (food) setValue("foodAllowance", food);
+      if (transport) setValue("transportAllowance", transport);
+      if (health) setValue("healthInsurance", health);
+      if (fuel) setValue("fuelAllowance", fuel);
+      if (child) setValue("childAllowance", child);
+      if (other) setValue("otherBenefits", other);
+      if (bonus) setValue("annualBonus", bonus);
+      if (leave) setValue("unusedLeaveDays", leave);
+      if (taxBase) setValue("cumulativeTaxBase", taxBase);
+      
+      // Auto-trigger calculation after a short delay
+      if (!hasTriggeredAutoCalc.current) {
+        hasTriggeredAutoCalc.current = true;
+        setTimeout(() => {
+          handleSubmit(onSubmit)();
+        }, 100);
+      }
+    }
+  }, [isHydrated, searchParams, setValue, handleSubmit]);
 
   // Save form data to localStorage on every change (only after hydration)
   const watchAllFields = watch();
@@ -606,10 +690,9 @@ export function SeveranceCalculator() {
               </div>
             </div>
 
-            {/* Calculate Button */}
             <Button
               type="submit"
-              className="w-full h-14 bg-[#2463eb] hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 text-lg transition-transform active:scale-[0.98]"
+              className="w-full h-14 bg-[#2463eb] hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 text-lg transition-transform active:scale-[0.98] cursor-pointer"
             >
               <Calculator className="w-5 h-5" />
               HESAPLA
@@ -619,12 +702,12 @@ export function SeveranceCalculator() {
       </div>
 
 
-      {result && <ResultsCard result={result} />}
+      {result && <ResultsCard result={result} formValues={watchAllFields} />}
     </div>
   );
 }
 
-function ResultsCard({ result }: { result: SeveranceResult }) {
+function ResultsCard({ result, formValues }: { result: SeveranceResult; formValues: FormData }) {
   // State for selected payments
   const [selectedPayments, setSelectedPayments] = useState({
     severance: true,
@@ -750,12 +833,65 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
     setSelectedPayments(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+
+  const handleShare = async () => {
+    const shareUrl = generateShareUrl(formValues);
+    const shareText = `🎯 Hakkım Ne? - Tazminat Hesabı\n\n💰 Net Ele Geçen: ${formatCurrency(displayedTotal)}\n📊 Toplam Brüt: ${formatCurrency(displayedGrossTotal)}\n⏱️ Çalışma Süresi: ${result.tenure.years} Yıl, ${result.tenure.months} Ay, ${result.tenure.days} Gün\n\nDetaylar: ${shareUrl}`;
+
+    // Detect if mobile device
+    const isMobile = typeof window !== 'undefined' && (window.navigator.maxTouchPoints > 0 || window.innerWidth < 768);
+    
+    try {
+      if (navigator.share && isMobile) {
+        // Mobile: Use native share
+        await navigator.share({
+          title: 'Hakkım Ne? - Tazminat Hesabı',
+          text: shareText,
+        });
+      } else {
+        // Desktop: Open custom dialog
+        setIsShareDialogOpen(true);
+      }
+    } catch (error) {
+      // User cancelled or error occurred
+      if (error instanceof Error && error.name !== 'AbortError') {
+        toast.error("Paylaşım sırasında bir hata oluştu");
+      }
+    }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      const shareUrl = generateShareUrl(formValues);
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Link panoya kopyalandı!");
+      setIsShareDialogOpen(false);
+    } catch (error) {
+      toast.error("Link kopyalanamadı");
+    }
+  };
+
+  const shareUrl = generateShareUrl(formValues);
+  const shareMessage = `🎯 Hakkım Ne? - Tazminat Hesabı\n💰 Net Ele Geçen: ${formatCurrency(displayedTotal)}\n📊 Toplam Brüt: ${formatCurrency(displayedGrossTotal)}\n⏱️ Çalışma Süresi: ${result.tenure.years} Yıl\n\nDetaylar:`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage + ' ' + shareUrl)}`;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent('Kıdem tazminatımı hesapladım! 💰')}&url=${encodeURIComponent(shareUrl)}`;
+
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
       <div className="bg-gradient-to-br from-[var(--card)] to-blue-50 dark:to-blue-950/30 border border-blue-100 dark:border-blue-900/50 rounded-xl p-6 md:p-8 relative overflow-hidden">
         {/* Decorative blur circle */}
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-200/50 dark:bg-blue-500/20 blur-3xl rounded-full pointer-events-none" />
+        
+        {/* Share Button */}
+        <button
+          onClick={handleShare}
+          className="absolute bottom-4 right-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2463eb] hover:bg-blue-700 text-white text-sm font-medium transition-colors cursor-pointer shadow-lg shadow-blue-500/30"
+        >
+          <Share2 size={16} />
+          Paylaş
+        </button>
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
           <div className="flex flex-col gap-1 text-center md:text-left">
@@ -938,6 +1074,50 @@ function ResultsCard({ result }: { result: SeveranceResult }) {
       <p className="text-xs text-center text-[var(--text-muted)]">
         * Kıdem tavanı: ₺53.919,68 (2025 2. Yarıyıl) | Asgari ücret: ₺26.005,50
       </p>
+
+      {/* Share Dialog for Desktop */}
+      <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Hesaplamanı Paylaş</DialogTitle>
+            <DialogDescription>
+              Hesaplama sonuçlarını sosyal medyada paylaş veya linki kopyala
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-4">
+            {/* WhatsApp */}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] hover:bg-green-50 dark:hover:bg-green-950/20 hover:border-green-500 transition-colors group cursor-pointer"
+            >
+              <MessageCircle className="w-5 h-5 text-green-600 group-hover:scale-110 transition-transform" />
+              <span className="font-medium text-[var(--text-main)]">WhatsApp</span>
+            </a>
+
+            {/* X (Twitter) */}
+            <a
+              href={twitterUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] hover:bg-gray-50 dark:hover:bg-gray-900/20 hover:border-gray-500 transition-colors group cursor-pointer"
+            >
+              <Twitter className="w-5 h-5 text-gray-800 dark:text-gray-200 group-hover:scale-110 transition-transform" />
+              <span className="font-medium text-[var(--text-main)]">X (Twitter)</span>
+            </a>
+
+            {/* Copy Link */}
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-500 transition-colors group cursor-pointer"
+            >
+              <Link className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform" />
+              <span className="font-medium text-[var(--text-main)]">Linki Kopyala</span>
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
