@@ -114,16 +114,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-[var(--card)]/50 mt-8">
         <div className="mx-auto max-w-[960px] px-4">
-          <div className="flex flex-wrap justify-center gap-4 mb-6 font-medium text-[var(--text-main)]">
-            <a href="#" className="hover:text-blue-600 transition-colors">Kıdem Tazminatı Nedir?</a>
-            <span className="text-slate-300">|</span>
-            <a href="#" className="hover:text-blue-600 transition-colors">İhbar Süreleri</a>
-            <span className="text-slate-300">|</span>
-            <a href="#" className="hover:text-blue-600 transition-colors">İstifa Tazminatı</a>
-            <span className="text-slate-300">|</span>
-            <a href="#" className="hover:text-blue-600 transition-colors">Gizlilik Politikası</a>
-          </div>
-          <p className="mb-2">© 2024 Hakkım Ne? - Tüm hakları saklıdır.</p>
+          <p className="mb-2">© 2025 Hakkım Ne? - Tüm hakları saklıdır.</p>
           <p className="text-xs">
             Bu araç bilgilendirme amaçlıdır. Kesin hesaplamalar için bir iş hukuku
             uzmanına danışın.

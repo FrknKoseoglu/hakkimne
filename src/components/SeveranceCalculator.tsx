@@ -37,7 +37,8 @@ import {
   Share2,
   MessageCircle,
   Twitter,
-  Link
+  Link,
+  RotateCcw
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -305,6 +306,48 @@ export function SeveranceCalculator() {
   const [salaryError, setSalaryError] = useState<string | null>(null);
   // Custom validation error for date fields
   const [dateError, setDateError] = useState<string | null>(null);
+  // Reset confirmation dialog
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+
+  const handleReset = () => {
+    // Reset all form values
+    setValue("startDate", "");
+    setValue("endDate", "");
+    setValue("grossSalary", "");
+    setValue("salaryDay", "1");
+    setValue("foodAllowance", "");
+    setValue("transportAllowance", "");
+    setValue("healthInsurance", "");
+    setValue("fuelAllowance", "");
+    setValue("childAllowance", "");
+    setValue("annualBonus", "");
+    setValue("otherBenefits", "");
+    setValue("unusedLeaveDays", "");
+    setValue("cumulativeTaxBase", "");
+    
+    // Clear localStorage
+    localStorage.removeItem(STORAGE_KEY);
+    
+    // Clear results
+    setCalculatorInput({
+      startDate: null,
+      endDate: null,
+      grossSalary: 0,
+      benefits: { food: 0, transport: 0, healthInsurance: 0, fuel: 0, childAllowance: 0, annualBonus: 0, other: 0 },
+      unusedLeaveDays: 0,
+      salaryDay: 1,
+      cumulativeTaxBase: 0,
+    });
+    
+    // Clear errors
+    setSalaryError(null);
+    setDateError(null);
+    
+    // Close dialog
+    setIsResetDialogOpen(false);
+    
+    toast.success("Tüm değerler sıfırlandı!");
+  };
 
   const onSubmit = (data: FormData) => {
     // Clear previous errors
@@ -357,7 +400,7 @@ export function SeveranceCalculator() {
       <div className="bg-[var(--card)] rounded-xl shadow-sm border border-[var(--border-light)] overflow-hidden">
         <div className="px-6 pt-8 pb-4 border-b border-[var(--border-light)]">
           <h2 className="text-2xl font-bold text-[var(--text-main)] leading-tight">
-            Kıdem Tazminatı Hesaplama
+            Kıdem ve İhbar Tazminatı Hesaplama
           </h2>
           <p className="text-[var(--text-muted)] mt-2 text-base">
             İşe giriş çıkış tarihlerinizi ve maaş bilgilerinizi girerek yasal haklarınızı hemen öğrenin.
@@ -444,6 +487,19 @@ export function SeveranceCalculator() {
                     max="31"
                     placeholder="1"
                     {...register("salaryDay")}
+                    onFocus={(e) => {
+                      if (e.target.value === "1") {
+                        setValue("salaryDay", "");
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const value = parseInt(e.target.value);
+                      if (value < 1 || isNaN(value) || e.target.value === "") {
+                        setValue("salaryDay", "1");
+                      } else if (value > 31) {
+                        setValue("salaryDay", "31");
+                      }
+                    }}
                     className="h-12 pl-11 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
                 </div>
@@ -640,7 +696,10 @@ export function SeveranceCalculator() {
                   </div>
                   <p className="text-xs text-[var(--text-muted)] flex items-center gap-1">
                     <Info className="w-4 h-4" />
-                    E-Devlet SGK dökümündeki {watchedEndDate ? new Date(watchedEndDate).getFullYear() : "işten çıkış yılı"} &apos;Genel Toplam&apos; tutarını giriniz.
+                    {watchedEndDate 
+                      ? `E-Devlet SGK dökümündeki ${new Date(watchedEndDate).getFullYear()} 'Genel Toplam' tutarını giriniz.`
+                      : "SGK dökümündeki 'Genel Toplam' tutarını giriniz."
+                    }
                   </p>
                 </div>
 
@@ -690,13 +749,52 @@ export function SeveranceCalculator() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full h-14 bg-[#2463eb] hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 text-lg transition-transform active:scale-[0.98] cursor-pointer"
-            >
-              <Calculator className="w-5 h-5" />
-              HESAPLA
-            </Button>
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                onClick={() => setIsResetDialogOpen(true)}
+                className="h-14 px-6 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 flex items-center justify-center gap-2 text-lg transition-transform active:scale-[0.98] cursor-pointer"
+              >
+                <RotateCcw className="w-5 h-5" />
+                Sıfırla
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 h-14 bg-[#2463eb] hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2 text-lg transition-transform active:scale-[0.98] cursor-pointer"
+              >
+                <Calculator className="w-5 h-5" />
+                HESAPLA
+              </Button>
+            </div>
+
+            {/* Reset Confirmation Dialog */}
+            <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-red-600">Sıfırla</DialogTitle>
+                  <DialogDescription>
+                    Tüm değerler sıfırlanacaktır. Emin misiniz?
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex gap-3 mt-4">
+                  <Button
+                    type="button"
+                    onClick={() => setIsResetDialogOpen(false)}
+                    className="flex-1 h-12 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg cursor-pointer"
+                  >
+                    Hayır
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleReset}
+                    className="flex-1 h-12 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg cursor-pointer"
+                  >
+                    Evet, Sıfırla
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </form>
         </div>
       </div>
