@@ -282,9 +282,10 @@ export function SeveranceCalculator() {
         
         <div className="p-6 md:p-8 space-y-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Dates - 2 columns */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
+            {/* Main Form Row - Single Line */}
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* İşe Giriş Tarihi - 25% */}
+              <div className="w-full md:w-[25%] space-y-2">
                 <Label htmlFor="startDate" className="text-sm font-medium text-[var(--text-main)]">
                   İşe Giriş Tarihi
                 </Label>
@@ -295,13 +296,14 @@ export function SeveranceCalculator() {
                     type="date"
                     max="9999-12-31"
                     {...register("startDate")}
-                    className="h-12 pl-11 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    className="h-12 pl-11 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
                 </div>
                 {errors.startDate && <p className="text-sm text-red-500">{errors.startDate.message}</p>}
               </div>
               
-              <div className="space-y-2">
+              {/* İşten Çıkış Tarihi - 25% */}
+              <div className="w-full md:w-[25%] space-y-2">
                 <Label htmlFor="endDate" className="text-sm font-medium text-[var(--text-main)]">
                   İşten Çıkış Tarihi
                 </Label>
@@ -312,24 +314,14 @@ export function SeveranceCalculator() {
                     type="date"
                     max="9999-12-31"
                     {...register("endDate")}
-                    className="h-12 pl-11 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    className="h-12 pl-11 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
                 </div>
                 {errors.endDate && <p className="text-sm text-red-500">{errors.endDate.message}</p>}
               </div>
-            </div>
 
-            {/* Date validation error */}
-            {dateError && (
-              <p className="text-sm text-red-500 flex items-center gap-1">
-                <AlertCircle className="w-4 h-4" />
-                {dateError}
-              </p>
-            )}
-
-            {/* Brüt Maaş */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
+              {/* Aylık Brüt Maaş - 35% */}
+              <div className="w-full md:w-[35%] space-y-2">
                 <Label htmlFor="grossSalary" className="text-sm font-medium text-[var(--text-main)]">
                   Aylık Brüt Maaş
                 </Label>
@@ -354,7 +346,8 @@ export function SeveranceCalculator() {
                 {errors.grossSalary && <p className="text-sm text-red-500">{errors.grossSalary.message}</p>}
               </div>
 
-              <div className="space-y-2">
+              {/* Maaş Günü - 15% */}
+              <div className="w-full md:w-[15%] space-y-2">
                 <Label htmlFor="salaryDay" className="text-sm font-medium text-[var(--text-main)]">
                   Maaş Günü
                 </Label>
@@ -367,7 +360,7 @@ export function SeveranceCalculator() {
                     max="31"
                     placeholder="1"
                     {...register("salaryDay")}
-                    className="h-12 pl-11 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    className="h-12 pl-11 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
                 </div>
                 {salaryDayWarning && (
@@ -380,7 +373,13 @@ export function SeveranceCalculator() {
               </div>
             </div>
 
-            {/* Salary validation error */}
+            {/* Validation errors */}
+            {dateError && (
+              <p className="text-sm text-red-500 flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                {dateError}
+              </p>
+            )}
             {salaryError && (
               <p className="text-sm text-red-500 flex items-center gap-1">
                 <AlertCircle className="w-4 h-4" />
@@ -388,50 +387,6 @@ export function SeveranceCalculator() {
               </p>
             )}
 
-            {/* Annual Bonus & Leave Days */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="annualBonus" className="text-sm font-medium text-[var(--text-main)]">
-                  Yıllık İkramiye (Net)
-                </Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
-                    ₺
-                  </span>
-                  <Controller
-                    name="annualBonus"
-                    control={control}
-                    render={({ field }) => (
-                      <CurrencyInput
-                        id="annualBonus"
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                        placeholder="0"
-                        className="h-12 pl-9 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="unusedLeaveDays" className="text-sm font-medium text-[var(--text-main)]">
-                  Kullanılmayan İzin Günü
-                </Label>
-                <div className="relative">
-                  <Palmtree className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
-                  <Input
-                    id="unusedLeaveDays"
-                    type="number"
-                    min="0"
-                    placeholder="0"
-                    {...register("unusedLeaveDays")}
-                    className="h-12 pl-11 pr-14 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium">Gün</span>
-                </div>
-              </div>
-            </div>
 
             {/* Yan Haklar Section */}
             <div className="pt-4 border-t border-[var(--border-light)]">
@@ -439,7 +394,7 @@ export function SeveranceCalculator() {
                 <PlusCircle className="text-[var(--primary)] w-5 h-5" />
                 Aylık Düzenli Yan Haklar (Net)
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="transportAllowance" className="text-xs font-medium text-[var(--text-muted)]">
                     Yol Ücreti
@@ -575,32 +530,79 @@ export function SeveranceCalculator() {
                 <Sliders className="text-[var(--primary)] w-5 h-5" />
                 Gelişmiş Ayarlar
               </h3>
-              <div className="space-y-2">
-                <Label htmlFor="cumulativeTaxBase" className="text-sm font-medium text-[var(--text-main)]">
-                  Kümülatif Gelir Vergisi Matrahı
-                </Label>
-                <div className="relative max-w-md">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
-                    ₺
-                  </span>
-                  <Controller
-                    name="cumulativeTaxBase"
-                    control={control}
-                    render={({ field }) => (
-                      <CurrencyInput
-                        id="cumulativeTaxBase"
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                        placeholder="0"
-                        className="h-12 pl-9 pr-4 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                      />
-                    )}
-                  />
+              <div className="flex flex-col md:flex-row gap-4">
+                {/* Kümülatif Gelir Vergisi Matrahı - 45% */}
+                <div className="w-full md:w-[45%] space-y-2">
+                  <Label htmlFor="cumulativeTaxBase" className="text-sm font-medium text-[var(--text-main)]">
+                    Kümülatif Gelir Vergisi Matrahı
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
+                      ₺
+                    </span>
+                    <Controller
+                      name="cumulativeTaxBase"
+                      control={control}
+                      render={({ field }) => (
+                        <CurrencyInput
+                          id="cumulativeTaxBase"
+                          value={field.value || ""}
+                          onChange={field.onChange}
+                          placeholder="0"
+                          className="h-12 pl-9 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                        />
+                      )}
+                    />
+                  </div>
+                  <p className="text-xs text-[var(--text-muted)] flex items-center gap-1">
+                    <Info className="w-4 h-4" />
+                    E-Devlet SGK dökümündeki {watchedEndDate ? new Date(watchedEndDate).getFullYear() : "işten çıkış yılı"} &apos;Genel Toplam&apos; tutarını giriniz.
+                  </p>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] mt-2 flex items-center gap-1">
-                  <Info className="w-4 h-4" />
-                  E-Devlet'te "SGK Tescil ve Hizmet Dökümü" hizmetinden işten çıkış yılına ait tablodaki "Genel Toplam" kısmındaki ücreti giriniz.
-                </p>
+
+                {/* Yıllık İkramiye - 27.5% */}
+                <div className="w-full md:w-[27.5%] space-y-2">
+                  <Label htmlFor="annualBonus" className="text-sm font-medium text-[var(--text-main)]">
+                    Yıllık İkramiye (Net)
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
+                      ₺
+                    </span>
+                    <Controller
+                      name="annualBonus"
+                      control={control}
+                      render={({ field }) => (
+                        <CurrencyInput
+                          id="annualBonus"
+                          value={field.value || ""}
+                          onChange={field.onChange}
+                          placeholder="0"
+                          className="h-12 pl-9 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                
+                {/* Kullanılmayan İzin Günü - 27.5% */}
+                <div className="w-full md:w-[27.5%] space-y-2">
+                  <Label htmlFor="unusedLeaveDays" className="text-sm font-medium text-[var(--text-main)]">
+                    Kullanılmayan İzin Günü
+                  </Label>
+                  <div className="relative">
+                    <Palmtree className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
+                    <Input
+                      id="unusedLeaveDays"
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      {...register("unusedLeaveDays")}
+                      className="h-12 pl-11 pr-14 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium">Gün</span>
+                  </div>
+                </div>
               </div>
             </div>
 
