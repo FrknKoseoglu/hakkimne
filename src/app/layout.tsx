@@ -22,13 +22,15 @@ const inter = Inter({
   display: "swap",
 });
 
+import { CURRENT_YEAR } from "@/lib/constants";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://hakkimne.com"),
   title: {
-    default: "Hakkım Ne? | 2025 Güncel Kıdem ve İhbar Tazminatı Hesaplama Robotu",
-    template: "%s | Hakkım Ne? - İşçi Hakları ve Tazminat Hesaplama",
+    default: `Kıdem ve İhbar Tazminatı Hesaplama ${CURRENT_YEAR} | Hakkım Ne?`,
+    template: `%s | Hakkım Ne? - İşçi Hakları ve Tazminat Hesaplama`,
   },
-  description: "Hakkım Ne ile kıdem ve ihbar tazminatınızı saniyeler içinde hesaplayın. 2025 güncel verileri, brüt maaş ve yan haklar dahil en doğru hesaplama aracı.",
+  description: `Hakkım Ne ile kıdem ve ihbar tazminatınızı saniyeler içinde hesaplayın. ${CURRENT_YEAR} güncel verileri, brüt maaş ve yan haklar dahil en doğru hesaplama aracı.`,
   keywords: [
     "kıdem tazminatı hesaplama",
     "ihbar tazminatı",
@@ -38,7 +40,7 @@ export const metadata: Metadata = {
     "işsizlik maaşı hesaplama",
     "hakkım ne",
     "tazminat robotu",
-    "2025 tazminat tavanı",
+    `${CURRENT_YEAR} tazminat tavanı`,
   ],
   authors: [{ name: "Hakkım Ne?", url: "https://hakkimne.com" }],
   creator: "Hakkım Ne?",
@@ -47,8 +49,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Hakkım Ne? | 2025 Kıdem ve İhbar Tazminatı Hesaplama",
-    description: "İşten mi ayrılıyorsunuz? Tazminat haklarınızı saniyeler içinde ücretsiz hesaplayın. 2025 güncel verileriyle en doğru sonuç.",
+    title: `Hakkım Ne? | ${CURRENT_YEAR} Kıdem ve İhbar Tazminatı Hesaplama`,
+    description: `İşten mi ayrılıyorsunuz? Tazminat haklarınızı saniyeler içinde ücretsiz hesaplayın. ${CURRENT_YEAR} güncel verileriyle en doğru sonuç.`,
     url: "https://hakkimne.com",
     siteName: "Hakkım Ne?",
     locale: "tr_TR",

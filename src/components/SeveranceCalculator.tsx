@@ -42,6 +42,7 @@ import {
   RotateCcw
 } from "lucide-react";
 import { toast } from "sonner";
+import { CURRENT_YEAR } from "@/lib/constants";
 
 const formSchema = z.object({
   startDate: z.string().min(1, "Başlangıç tarihi gerekli"),
@@ -411,7 +412,7 @@ export function SeveranceCalculator() {
       <div className="bg-[var(--card)] rounded-xl shadow-sm border border-[var(--border-light)] overflow-hidden">
         <div className="px-6 pt-8 pb-4 border-b border-[var(--border-light)]">
           <h2 className="text-2xl font-bold text-[var(--text-main)] leading-tight">
-            Kıdem ve İhbar Tazminatı Hesaplama
+            Kıdem ve İhbar Tazminatı Hesaplama {CURRENT_YEAR}
           </h2>
           <p className="text-[var(--text-muted)] mt-2 text-base">
             İşe giriş çıkış tarihlerinizi ve maaş bilgilerinizi girerek yasal haklarınızı hemen öğrenin.

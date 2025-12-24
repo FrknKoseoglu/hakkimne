@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { SeveranceCalculator } from "@/components/SeveranceCalculator";
 import { Navbar } from "@/components/Navbar";
 import { ShieldCheck } from "lucide-react";
+import { CURRENT_YEAR } from "@/lib/constants";
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="mx-auto max-w-[960px] px-4 py-8">
-        <h1 className="sr-only">2025 Kıdem ve İhbar Tazminatı Hesaplama</h1>
+        <h1 className="sr-only">{CURRENT_YEAR} Kıdem ve İhbar Tazminatı Hesaplama</h1>
         <Suspense fallback={<div className="animate-pulse bg-slate-200 dark:bg-slate-800 rounded-lg h-[600px]" />}>
           <SeveranceCalculator />
         </Suspense>
@@ -47,10 +48,10 @@ export default function Home() {
               "mainEntity": [
                 {
                   "@type": "Question",
-                  "name": "Kıdem tazminatı tavanı ne kadar?",
+                  "name": "Kıdem ve İhbar Tazminatı Hesaplama",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "2025 yılı ilk yarısı (Ocak-Haziran) için kıdem tazminatı tavanı 53.919,68 TL olarak belirlenmiştir."
+                    "text": `${CURRENT_YEAR} yılı ilk yarısı (Ocak-Haziran) için kıdem tazminatı tavanı 53.919,68 TL olarak belirlenmiştir.`
                   }
                 },
                 {
@@ -85,7 +86,7 @@ export default function Home() {
             <p className="mb-4">
               Kıdem tazminatı hesaplama işlemi, işçinin işe giriş ve çıkış tarihleri arasındaki 
               toplam çalışma süresi ile son brüt ücreti üzerinden yapılır. <strong>Hakkım Ne?</strong> hesaplama robotu, 
-              2025 güncel vergi dilimlerini ve tavan ücretlerini dikkate alarak size en doğru sonucu verir.
+              {CURRENT_YEAR} güncel vergi dilimlerini ve tavan ücretlerini dikkate alarak size en doğru sonucu verir.
             </p>
             <p className="mb-4">
               Kıdem tazminatı alma şartları arasında en az 1 yıl çalışmış olmak ve işveren tarafından 
@@ -105,9 +106,9 @@ export default function Home() {
               </li>
             </ul>
              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 mt-6">
-              <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2">2025 Kıdem Tazminatı Tavanı</h4>
+              <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2">{CURRENT_YEAR} Kıdem Tazminatı Tavanı</h4>
               <p className="text-sm text-blue-700 dark:text-blue-400">
-                Ocak-Haziran 2025 dönemi için kıdem tazminatı tavanı <strong>53.919,68 TL</strong> olarak güncellenmiştir.
+                Ocak-Haziran {CURRENT_YEAR} dönemi için kıdem tazminatı tavanı <strong>53.919,68 TL</strong> olarak güncellenmiştir.
                 Maaşınız bu tutarın üzerindeyse, kıdem tazminatınız tavan üzerinden hesaplanır.
               </p>
             </div>
@@ -137,7 +138,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-[var(--card)]/50 mt-8">
         <div className="mx-auto max-w-[960px] px-4">
-          <p className="mb-2">© 2025 Hakkım Ne? - Tüm hakları saklıdır.</p>
+          <p className="mb-2">© {CURRENT_YEAR} Hakkım Ne? - Tüm hakları saklıdır.</p>
           <p className="text-xs">
             Bu araç bilgilendirme amaçlıdır. Kesin hesaplamalar için bir iş hukuku
             uzmanına danışın.

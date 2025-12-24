@@ -2,6 +2,7 @@
 
 import { useTheme } from "./ThemeProvider";
 import { Calculator, Sun, Moon } from "lucide-react";
+import { CURRENT_YEAR } from "@/lib/constants";
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -36,7 +37,7 @@ export function Navbar() {
           </button>
           
           <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900/50 px-3 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-200 dark:ring-blue-700">
-            2025 Güncel
+            {CURRENT_YEAR} Güncel
           </span>
         </div>
       </div>
