@@ -2,9 +2,11 @@ import { Suspense } from "react";
 import { SeveranceCalculator } from "@/components/SeveranceCalculator";
 import { Navbar } from "@/components/Navbar";
 import { ShieldCheck } from "lucide-react";
-import { CURRENT_YEAR } from "@/lib/constants";
+import { CURRENT_YEAR, getCurrentSeveranceCeiling } from "@/lib/constants";
 
 export default function Home() {
+  const currentCeiling = getCurrentSeveranceCeiling();
+  
   return (
     <div className="min-h-screen bg-[var(--background-light)]">
       <Navbar />
@@ -51,7 +53,7 @@ export default function Home() {
                   "name": "Kıdem ve İhbar Tazminatı Hesaplama",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": `${CURRENT_YEAR} yılı ilk yarısı (Ocak-Haziran) için kıdem tazminatı tavanı 53.919,68 TL olarak belirlenmiştir.`
+                    "text": `${CURRENT_YEAR} yılı ${currentCeiling.period} dönemi için kıdem tazminatı tavanı ${currentCeiling.amount} TL olarak belirlenmiştir.`
                   }
                 },
                 {
@@ -108,7 +110,7 @@ export default function Home() {
              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 mt-6">
               <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2">{CURRENT_YEAR} Kıdem Tazminatı Tavanı</h4>
               <p className="text-sm text-blue-700 dark:text-blue-400">
-                Ocak-Haziran {CURRENT_YEAR} dönemi için kıdem tazminatı tavanı <strong>53.919,68 TL</strong> olarak güncellenmiştir.
+                {currentCeiling.period} {CURRENT_YEAR} dönemi için kıdem tazminatı tavanı <strong>{currentCeiling.amount} TL</strong> olarak güncellenmiştir.
                 Maaşınız bu tutarın üzerindeyse, kıdem tazminatınız tavan üzerinden hesaplanır.
               </p>
             </div>
