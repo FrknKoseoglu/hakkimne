@@ -425,8 +425,9 @@ export function SeveranceCalculator() {
             <div className="flex flex-col md:flex-row gap-4">
               {/* İşe Giriş Tarihi - 25% */}
               <div className="w-full md:w-[25%] space-y-2">
-                <Label htmlFor="startDate" className="text-sm font-medium text-[var(--text-main)]">
+                <Label htmlFor="startDate" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
                   İşe Giriş Tarihi
+                  <Info className="w-3.5 h-3.5 text-blue-500" />
                 </Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
@@ -443,8 +444,9 @@ export function SeveranceCalculator() {
               
               {/* İşten Çıkış Tarihi - 25% */}
               <div className="w-full md:w-[25%] space-y-2">
-                <Label htmlFor="endDate" className="text-sm font-medium text-[var(--text-main)]">
+                <Label htmlFor="endDate" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
                   İşten Çıkış Tarihi
+                  <Info className="w-3.5 h-3.5 text-blue-500" />
                 </Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
@@ -461,8 +463,9 @@ export function SeveranceCalculator() {
 
               {/* Aylık Brüt Maaş - 35% */}
               <div className="w-full md:w-[35%] space-y-2">
-                <Label htmlFor="grossSalary" className="text-sm font-medium text-[var(--text-main)]">
+                <Label htmlFor="grossSalary" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
                   Aylık Brüt Maaş
+                  <Info className="w-3.5 h-3.5 text-blue-500" />
                 </Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
@@ -487,8 +490,9 @@ export function SeveranceCalculator() {
 
               {/* Maaş Günü - 15% */}
               <div className="w-full md:w-[15%] space-y-2">
-                <Label htmlFor="salaryDay" className="text-sm font-medium text-[var(--text-main)]">
+                <Label htmlFor="salaryDay" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
                   Maaş Günü
+                  <Info className="w-3.5 h-3.5 text-blue-500" />
                 </Label>
                 <div className="relative">
                   <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
