@@ -320,6 +320,10 @@ export function SeveranceCalculator() {
   const [dateError, setDateError] = useState<string | null>(null);
   // Reset confirmation dialog
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  // Track last calculated form values to detect changes
+  const [lastCalculatedValues, setLastCalculatedValues] = useState<FormData | null>(null);
+  // Track if form has been modified since last calculation
+  const [formModifiedSinceCalc, setFormModifiedSinceCalc] = useState(false);
 
   const handleReset = () => {
     // Reset all form values
@@ -357,6 +361,10 @@ export function SeveranceCalculator() {
     
     // Close dialog
     setIsResetDialogOpen(false);
+    
+    // Clear modified flag
+    setFormModifiedSinceCalc(false);
+    setLastCalculatedValues(null);
     
     toast.success("Tüm değerler sıfırlandı!");
   };
@@ -404,7 +412,34 @@ export function SeveranceCalculator() {
       salaryDay: parseInt(data.salaryDay || "1") || 1,
       cumulativeTaxBase: parseTurkishNumber(data.cumulativeTaxBase || ""),
     });
+    
+    // Store the calculated form values and reset modified flag
+    setLastCalculatedValues({ ...data });
+    setFormModifiedSinceCalc(false);
   };
+
+  // Detect form changes after calculation
+  useEffect(() => {
+    if (!lastCalculatedValues || !isHydrated) return;
+    
+    const currentValues = watchAllFields;
+    const hasChanged = 
+      currentValues.startDate !== lastCalculatedValues.startDate ||
+      currentValues.endDate !== lastCalculatedValues.endDate ||
+      currentValues.grossSalary !== lastCalculatedValues.grossSalary ||
+      currentValues.salaryDay !== lastCalculatedValues.salaryDay ||
+      currentValues.foodAllowance !== lastCalculatedValues.foodAllowance ||
+      currentValues.transportAllowance !== lastCalculatedValues.transportAllowance ||
+      currentValues.healthInsurance !== lastCalculatedValues.healthInsurance ||
+      currentValues.fuelAllowance !== lastCalculatedValues.fuelAllowance ||
+      currentValues.childAllowance !== lastCalculatedValues.childAllowance ||
+      currentValues.annualBonus !== lastCalculatedValues.annualBonus ||
+      currentValues.otherBenefits !== lastCalculatedValues.otherBenefits ||
+      currentValues.unusedLeaveDays !== lastCalculatedValues.unusedLeaveDays ||
+      currentValues.cumulativeTaxBase !== lastCalculatedValues.cumulativeTaxBase;
+    
+    setFormModifiedSinceCalc(hasChanged);
+  }, [watchAllFields, lastCalculatedValues, isHydrated]);
 
   return (
     <div className="w-full space-y-8">
@@ -421,14 +456,18 @@ export function SeveranceCalculator() {
         
         <div className="p-6 md:p-8 space-y-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Main Form Row - Single Line */}
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* İşe Giriş Tarihi - 25% */}
-              <div className="w-full md:w-[25%] space-y-2">
-                <Label htmlFor="startDate" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
-                  İşe Giriş Tarihi
-                  <Info className="w-3.5 h-3.5 text-blue-500" />
-                </Label>
+            {/* Temel Bilgiler Section */}
+            <div>
+              <h3 className="text-lg font-semibold text-[var(--text-main)] mb-4 flex items-center gap-2">
+                <Briefcase className="text-[var(--primary)] w-5 h-5" />
+                Temel Bilgiler <span className="text-sm font-normal text-[var(--text-muted)]">(Zorunlu)</span>
+              </h3>
+              <div className="flex flex-col md:flex-row gap-4">
+                {/* İşe Giriş Tarihi - 25% */}
+                <div className="w-full md:w-[25%] space-y-2">
+                  <Label htmlFor="startDate" className="text-sm font-medium text-[var(--text-main)]">
+                    İşe Giriş Tarihi
+                  </Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
                   <Input
@@ -439,15 +478,14 @@ export function SeveranceCalculator() {
                     className="h-12 pl-11 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
                 </div>
-                {errors.startDate && <p className="text-sm text-red-500">{errors.startDate.message}</p>}
-              </div>
-              
-              {/* İşten Çıkış Tarihi - 25% */}
-              <div className="w-full md:w-[25%] space-y-2">
-                <Label htmlFor="endDate" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
-                  İşten Çıkış Tarihi
-                  <Info className="w-3.5 h-3.5 text-blue-500" />
-                </Label>
+                  {errors.startDate && <p className="text-sm text-red-500">{errors.startDate.message}</p>}
+                </div>
+                
+                {/* İşten Çıkış Tarihi - 25% */}
+                <div className="w-full md:w-[25%] space-y-2">
+                  <Label htmlFor="endDate" className="text-sm font-medium text-[var(--text-main)]">
+                    İşten Çıkış Tarihi
+                  </Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
                   <Input
@@ -457,16 +495,15 @@ export function SeveranceCalculator() {
                     {...register("endDate")}
                     className="h-12 pl-11 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
+                  </div>
+                  {errors.endDate && <p className="text-sm text-red-500">{errors.endDate.message}</p>}
                 </div>
-                {errors.endDate && <p className="text-sm text-red-500">{errors.endDate.message}</p>}
-              </div>
 
-              {/* Aylık Brüt Maaş - 35% */}
-              <div className="w-full md:w-[35%] space-y-2">
-                <Label htmlFor="grossSalary" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
-                  Aylık Brüt Maaş
-                  <Info className="w-3.5 h-3.5 text-blue-500" />
-                </Label>
+                {/* Aylık Brüt Maaş - 35% */}
+                <div className="w-full md:w-[35%] space-y-2">
+                  <Label htmlFor="grossSalary" className="text-sm font-medium text-[var(--text-main)]">
+                    Aylık Brüt Maaş
+                  </Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
                     ₺
@@ -484,16 +521,15 @@ export function SeveranceCalculator() {
                       />
                     )}
                   />
+                  </div>
+                  {errors.grossSalary && <p className="text-sm text-red-500">{errors.grossSalary.message}</p>}
                 </div>
-                {errors.grossSalary && <p className="text-sm text-red-500">{errors.grossSalary.message}</p>}
-              </div>
 
-              {/* Maaş Günü - 15% */}
-              <div className="w-full md:w-[15%] space-y-2">
-                <Label htmlFor="salaryDay" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
-                  Maaş Günü
-                  <Info className="w-3.5 h-3.5 text-blue-500" />
-                </Label>
+                {/* Maaş Günü - 15% */}
+                <div className="w-full md:w-[15%] space-y-2">
+                  <Label htmlFor="salaryDay" className="text-sm font-medium text-[var(--text-main)]">
+                    Maaş Günü
+                  </Label>
                 <div className="relative">
                   <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
                   <Input
@@ -517,15 +553,16 @@ export function SeveranceCalculator() {
                       }
                     }}
                     className="h-12 pl-11 pr-4 w-full rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                  />
+                    />
+                  </div>
+                  {salaryDayWarning && (
+                    <p className="text-sm text-amber-600 flex items-center gap-1">
+                      <AlertTriangle className="w-4 h-4" />
+                      {salaryDayWarning}
+                    </p>
+                  )}
+                  {errors.salaryDay && <p className="text-sm text-red-500">{errors.salaryDay.message}</p>}
                 </div>
-                {salaryDayWarning && (
-                  <p className="text-sm text-amber-600 flex items-center gap-1">
-                    <AlertTriangle className="w-4 h-4" />
-                    {salaryDayWarning}
-                  </p>
-                )}
-                {errors.salaryDay && <p className="text-sm text-red-500">{errors.salaryDay.message}</p>}
               </div>
             </div>
             
@@ -559,7 +596,7 @@ export function SeveranceCalculator() {
             <div className="pt-4 border-t border-[var(--border-light)]">
               <h3 className="text-lg font-semibold text-[var(--text-main)] mb-4 flex items-center gap-2">
                 <PlusCircle className="text-[var(--primary)] w-5 h-5" />
-                Aylık Düzenli Yan Haklar (Net)
+                Aylık Düzenli Yan Haklar (Net) <span className="text-sm font-normal text-[var(--text-muted)]">(Opsiyonel)</span>
               </h3>
               <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                 <div className="space-y-1.5">
@@ -695,13 +732,19 @@ export function SeveranceCalculator() {
             <div className="pt-4 border-t border-[var(--border-light)]">
               <h3 className="text-lg font-semibold text-[var(--text-main)] mb-4 flex items-center gap-2">
                 <Sliders className="text-[var(--primary)] w-5 h-5" />
-                Gelişmiş Ayarlar
+                Gelişmiş Ayarlar <span className="text-sm font-normal text-[var(--text-muted)]">(Opsiyonel)</span>
               </h3>
               <div className="flex flex-col md:flex-row gap-4">
                 {/* Kümülatif Gelir Vergisi Matrahı - 45% */}
                 <div className="w-full md:w-[45%] space-y-2">
-                  <Label htmlFor="cumulativeTaxBase" className="text-sm font-medium text-[var(--text-main)]">
+                  <Label htmlFor="cumulativeTaxBase" className="text-sm font-medium text-[var(--text-main)] flex items-center gap-1.5">
                     Kümülatif Gelir Vergisi Matrahı
+                    <span className="relative group">
+                      <Info className="w-4 h-4 text-blue-500 cursor-help" />
+                      <span className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 px-3 py-2 text-xs font-normal text-white bg-gray-800 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                        E-Devlet &gt; SGK Tescil ve Hizmet Dökümü &gt; Prim Gün ve Kazanç Bilgileri sayfasından {watchedEndDate ? new Date(watchedEndDate).getFullYear() : "ilgili"} yılının &quot;Genel Toplam&quot; tutarını giriniz. Opsiyoneldir, yalnızca İhbar Tazminatı hesaplamasında kullanılır.
+                      </span>
+                    </span>
                   </Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-medium text-lg">
@@ -721,13 +764,6 @@ export function SeveranceCalculator() {
                       )}
                     />
                   </div>
-                  <p className="text-xs text-[var(--text-muted)] flex items-center gap-1">
-                    <Info className="w-4 h-4" />
-                    {watchedEndDate 
-                      ? `E-Devlet SGK dökümündeki ${new Date(watchedEndDate).getFullYear()} 'Genel Toplam' tutarını giriniz.`
-                      : "SGK dökümündeki 'Genel Toplam' tutarını giriniz."
-                    }
-                  </p>
                 </div>
 
                 {/* Yıllık İkramiye - 27.5% */}
@@ -827,12 +863,12 @@ export function SeveranceCalculator() {
       </div>
 
 
-      {result && <ResultsCard result={result} formValues={watchAllFields} />}
+      {result && <ResultsCard result={result} formValues={watchAllFields} formModifiedSinceCalc={formModifiedSinceCalc} onRecalculate={handleSubmit(onSubmit)} />}
     </div>
   );
 }
 
-function ResultsCard({ result, formValues }: { result: SeveranceResult; formValues: FormData }) {
+function ResultsCard({ result, formValues, formModifiedSinceCalc, onRecalculate }: { result: SeveranceResult; formValues: FormData; formModifiedSinceCalc: boolean; onRecalculate: () => void }) {
   // State for selected payments
   const [selectedPayments, setSelectedPayments] = useState({
     severance: true,
@@ -1004,8 +1040,27 @@ function ResultsCard({ result, formValues }: { result: SeveranceResult; formValu
 
   return (
     <div className="space-y-6">
+      {/* Form Modified Warning */}
+      {formModifiedSinceCalc && (
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              Form verileri değiştirildi. Güncel sonuçları görmek için lütfen tekrar hesaplayın.
+            </p>
+          </div>
+          <Button
+            type="button"
+            onClick={onRecalculate}
+            className="h-8 px-4 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-lg cursor-pointer shrink-0"
+          >
+            Tekrar Hesapla
+          </Button>
+        </div>
+      )}
+
       {/* Hero Banner */}
-      <div className="bg-gradient-to-br from-[var(--card)] to-blue-50 dark:to-blue-950/30 border border-blue-100 dark:border-blue-900/50 rounded-xl p-6 md:p-8 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[var(--card)] to-blue-50 dark:to-blue-950/30 border border-blue-100 dark:border-blue-900/50 rounded-xl p-6 pb-16 md:p-8 md:pb-8 relative overflow-hidden">
         {/* Decorative blur circle */}
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-200/50 dark:bg-blue-500/20 blur-3xl rounded-full pointer-events-none" />
         
