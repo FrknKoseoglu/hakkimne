@@ -41,7 +41,9 @@ interface CalculationResult {
   durationMonths: number;
   totalNetBenefit: number;
   isCapped: boolean;
+  isFloored: boolean;
   ceiling: number;
+  floor: number;
 }
 
 // Turkish number formatting (e.g., 99.332,50)
@@ -129,10 +131,19 @@ export function UnemploymentCalculator() {
     // Step A: Calculate 40% of gross salary
     const calculatedBenefit = salary * 0.4;
 
-    // Step B: Apply ceiling (80% of minimum wage)
+    // Step B: Apply ceiling (80% of minimum wage) and floor (40% of minimum wage)
     const ceiling = currentMinWage * 0.8;
+    const floor = currentMinWage * 0.4;
     const isCapped = calculatedBenefit > ceiling;
-    const grossBenefit = Math.min(calculatedBenefit, ceiling);
+    const isFloored = calculatedBenefit < floor;
+    
+    // Apply ceiling and floor limits
+    let grossBenefit = calculatedBenefit;
+    if (isCapped) {
+      grossBenefit = ceiling;
+    } else if (isFloored) {
+      grossBenefit = floor;
+    }
 
     // Step C: Deduct stamp tax
     const stampTax = grossBenefit * STAMP_TAX_RATE;
@@ -148,7 +159,9 @@ export function UnemploymentCalculator() {
       durationMonths,
       totalNetBenefit,
       isCapped,
+      isFloored,
       ceiling,
+      floor,
     });
   };
 
@@ -273,6 +286,21 @@ export function UnemploymentCalculator() {
               </div>
             )}
 
+            {/* Floored Info */}
+            {result.isFloored && (
+              <div className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
+                <Info className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-green-800 dark:text-green-300">
+                    Taban Ücret Uygulandı
+                  </p>
+                  <p className="text-sm text-green-700 dark:text-green-400">
+                    Hesaplanan tutar, taban tutarın altında kaldığı için minimum işsizlik maaşı ({formatCurrency(result.floor)}) uygulandı.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Main Result */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Net Monthly Benefit */}
@@ -359,6 +387,14 @@ export function UnemploymentCalculator() {
           </span>
           <span className="font-medium">
             {formatCurrency(currentMinWage * 0.8)}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-sm mt-1">
+          <span className="text-[var(--text-muted)]">
+            İşsizlik Maaşı Tabanı (%40):
+          </span>
+          <span className="font-medium">
+            {formatCurrency(currentMinWage * 0.4)}
           </span>
         </div>
       </div>
