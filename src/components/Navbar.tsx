@@ -30,7 +30,7 @@ export function Navbar() {
             Kıdem ve İhbar
           </Link>
           <Link
-            href="/issizlik-maasi"
+            href="/issizlik-maasi-hesaplama"
             className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
           >
             İşsizlik Maaşı
