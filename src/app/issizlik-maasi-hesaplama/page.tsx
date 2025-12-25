@@ -29,21 +29,22 @@ export default function IsizlikMaasiPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[var(--primary)] to-blue-700 text-white py-12">
+      <section className="bg-gradient-to-br from-[var(--primary)] to-blue-700 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">
             İşsizlik Maaşı Hesaplama
           </h1>
-          <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg opacity-90 max-w-2xl mx-auto">
             {CURRENT_YEAR} güncel verileriyle ne kadar ve kaç ay işsizlik maaşı
             alacağınızı hesaplayın.
           </p>
         </div>
       </section>
 
+
       {/* Calculator Section */}
-      <section className="py-12 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-8">
+        <div className="max-w-[960px] mx-auto px-4">
           <Suspense fallback={<div className="text-center">Yükleniyor...</div>}>
             <UnemploymentCalculator />
           </Suspense>

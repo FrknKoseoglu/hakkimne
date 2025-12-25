@@ -83,17 +83,17 @@ export default async function BlogPostPage({ params }: PageProps) {
     <div className="min-h-screen bg-[var(--background-light)]">
       <Navbar />
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[var(--primary)] to-blue-700 text-white py-12">
+      <section className="bg-gradient-to-br from-[var(--primary)] to-blue-700 text-white py-8">
         <div className="max-w-7xl mx-auto px-4">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Blog&apos;a Dön
           </Link>
 
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 max-w-4xl">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 max-w-4xl">
             {post.title}
           </h1>
 

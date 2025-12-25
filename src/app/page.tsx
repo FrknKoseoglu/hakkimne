@@ -1,149 +1,244 @@
-import { Suspense } from "react";
-import { SeveranceCalculator } from "@/components/SeveranceCalculator";
+import { Metadata } from "next";
+import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
-import { ShieldCheck } from "lucide-react";
-import { CURRENT_YEAR, getCurrentSeveranceCeiling } from "@/lib/constants";
+import { 
+  Calculator, 
+  Briefcase, 
+  FileText, 
+  ArrowRight,
+  ShieldCheck,
+  Users,
+  Clock,
+  CheckCircle
+} from "lucide-react";
+import { CURRENT_YEAR } from "@/lib/constants";
+
+export const metadata: Metadata = {
+  title: `Hakkım Ne? | ${CURRENT_YEAR} Tazminat ve İşçi Hakları Hesaplama`,
+  description: `${CURRENT_YEAR} güncel kıdem tazminatı, ihbar tazminatı ve işsizlik maaşı hesaplama. Yasal haklarınızı ücretsiz olarak hemen öğrenin.`,
+  keywords: [
+    "hakkım ne",
+    "kıdem tazminatı hesaplama",
+    "ihbar tazminatı",
+    "işsizlik maaşı hesaplama",
+    "işçi hakları",
+    `${CURRENT_YEAR} tazminat hesaplama`,
+  ],
+  openGraph: {
+    title: `Hakkım Ne? | Tazminat ve İşçi Hakları Hesaplama`,
+    description: `${CURRENT_YEAR} güncel tazminat hesaplama araçları. Yasal haklarınızı ücretsiz öğrenin.`,
+    type: "website",
+  },
+};
+
+const services = [
+  {
+    title: "Kıdem ve İhbar Tazminatı",
+    description: "İşten ayrılırken alacağınız kıdem ve ihbar tazminatını güncel vergi dilimleri ile hesaplayın.",
+    icon: Briefcase,
+    href: "/kidem-tazminati-hesaplama",
+    color: "blue",
+    features: ["Kıdem Tazminatı", "İhbar Tazminatı", "Yıllık İzin Ücreti"],
+  },
+  {
+    title: "İşsizlik Maaşı",
+    description: "İşsiz kaldığınızda ne kadar ve kaç ay işsizlik maaşı alacağınızı öğrenin.",
+    icon: Calculator,
+    href: "/issizlik-maasi-hesaplama",
+    color: "purple",
+    features: ["Aylık Maaş Tutarı", "Maaş Süresi", "Tavan Hesaplama"],
+  },
+  {
+    title: "Blog",
+    description: "İş hukuku, çalışan hakları ve güncel mevzuat hakkında bilgilendirici yazılar.",
+    icon: FileText,
+    href: "/blog",
+    color: "green",
+    features: ["Güncel Mevzuat", "Hukuki Bilgiler", "Pratik İpuçları"],
+  },
+];
+
+const stats = [
+  { value: "50.000+", label: "Hesaplama Yapıldı" },
+  { value: "4.9/5", label: "Kullanıcı Puanı" },
+  { value: "%100", label: "Ücretsiz" },
+  { value: "7/24", label: "Erişilebilir" },
+];
 
 export default function Home() {
-  const currentCeiling = getCurrentSeveranceCeiling();
-  
   return (
     <div className="min-h-screen bg-[var(--background-light)]">
       <Navbar />
 
-      {/* Main Content */}
-      <main className="mx-auto max-w-[960px] px-4 py-8">
-        <h1 className="sr-only">{CURRENT_YEAR} Kıdem ve İhbar Tazminatı Hesaplama</h1>
-        <Suspense fallback={<div className="animate-pulse bg-slate-200 dark:bg-slate-800 rounded-lg h-[600px]" />}>
-          <SeveranceCalculator />
-        </Suspense>
-        
-        {/* JSON-LD Schema */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "Hakkım Ne? Kıdem Tazminatı Hesaplama",
-              "applicationCategory": "FinanceApplication",
-              "operatingSystem": "Web Browser",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "TRY"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "ratingCount": "1250"
-              }
-            })
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": "Kıdem ve İhbar Tazminatı Hesaplama",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": `${CURRENT_YEAR} yılı ${currentCeiling.period} dönemi için kıdem tazminatı tavanı ${currentCeiling.amount} TL olarak belirlenmiştir.`
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "İstifa eden kıdem tazminatı alabilir mi?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Normal şartlarda istifa eden işçi kıdem tazminatı alamaz. Ancak evlilik (kadın işçi için 1 yıl içinde), askerlik, emeklilik veya haklı nedenle fesih durumlarında istifa edilse dahi tazminat alınabilir."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Kıdem tazminatı kaç günde ödenir?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "İş Kanunu'na göre kıdem tazminatı iş akdinin feshedildiği tarihte peşin olarak ödenmelidir. Ancak tarafların anlaşması durumunda taksitle de ödenebilir."
-                  }
-                }
-              ]
-            })
-          }}
-        />
-      </main>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-[var(--primary)] to-blue-700 text-white py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+            Yasal Haklarınızı <span className="text-yellow-300">Hemen</span> Öğrenin
+          </h1>
+          <p className="text-base md:text-lg opacity-90 max-w-2xl mx-auto mb-6">
+            {CURRENT_YEAR} güncel verileriyle kıdem tazminatı, ihbar tazminatı ve işsizlik maaşı hesaplayın. 
+            <strong> Tamamen ücretsiz</strong>, verileriniz güvende.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/kidem-tazminati-hesaplama"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
+            >
+              <Briefcase className="w-5 h-5" />
+              Tazminat Hesapla
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="/issizlik-maasi-hesaplama"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/30"
+            >
+              <Calculator className="w-5 h-5" />
+              İşsizlik Maaşı Hesapla
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      {/* SEO Content Section */}
-      <section className="mx-auto max-w-[960px] px-4 pb-12">
-        <div className="border-t border-[var(--border-light)] pt-8">
-          <h2 className="text-2xl font-bold text-[var(--text-main)] mb-4">
-            Kıdem ve İhbar Tazminatı Nasıl Hesaplanır?
-          </h2>
-          <div className="prose prose-slate max-w-none text-[var(--text-muted)]">
-            <p className="mb-4">
-              Kıdem tazminatı hesaplama işlemi, işçinin işe giriş ve çıkış tarihleri arasındaki 
-              toplam çalışma süresi ile son brüt ücreti üzerinden yapılır. <strong>Hakkım Ne?</strong> hesaplama robotu, 
-              {CURRENT_YEAR} güncel vergi dilimlerini ve tavan ücretlerini dikkate alarak size en doğru sonucu verir.
+      {/* Stats Section */}
+      <section className="py-8 bg-[var(--card)] border-b border-[var(--border-light)]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <p className="text-2xl md:text-3xl font-bold text-[var(--primary)]">{stat.value}</p>
+                <p className="text-sm text-[var(--text-muted)]">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">
+              Hesaplama Araçlarımız
+            </h2>
+            <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
+              {CURRENT_YEAR} güncel mevzuata uygun, güvenilir ve ücretsiz hesaplama araçları
             </p>
-            <p className="mb-4">
-              Kıdem tazminatı alma şartları arasında en az 1 yıl çalışmış olmak ve işveren tarafından 
-              haklı bir neden olmadan işten çıkarılmış olmak (veya haklı nedenle istifa etmek) bulunur.
-              Hesaplama yapılırken brüt maaşınıza; yol, yemek, ikramiye gibi düzenli ödemeler eklenerek 
-              <strong>"giydirilmiş brüt ücret"</strong> bulunur.
-            </p>
-            <h3 className="text-xl font-semibold text-[var(--text-main)] mt-6 mb-3">Hesaplama Detayları</h3>
-            <ul className="list-disc pl-5 space-y-2 mb-4">
-              <li>
-                <strong>Kıdem Tazminatı:</strong> Her tam yıl için 30 günlük brüt ücret tutarında ödeme yapılır.
-                <span className="text-sm text-blue-500 block mt-1">(Damga vergisi hariç kesinti yapılmaz)</span>
-              </li>
-              <li>
-                <strong>İhbar Tazminatı:</strong> Çalışma sürenize göre 2 haftadan 8 haftaya kadar ihbar süresi maaşı ödenir.
-                <span className="text-sm text-blue-500 block mt-1">(Gelir ve damga vergisi kesilir)</span>
-              </li>
-            </ul>
-             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 mt-6">
-              <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2">{CURRENT_YEAR} Kıdem Tazminatı Tavanı</h4>
-              <p className="text-sm text-blue-700 dark:text-blue-400">
-                {currentCeiling.period} {CURRENT_YEAR} dönemi için kıdem tazminatı tavanı <strong>{currentCeiling.amount} TL</strong> olarak güncellenmiştir.
-                Maaşınız bu tutarın üzerindeyse, kıdem tazminatınız tavan üzerinden hesaplanır.
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              const colorClasses = {
+                blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white",
+                purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white",
+                green: "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 group-hover:bg-green-600 group-hover:text-white",
+              };
+              
+              return (
+                <Link
+                  key={index}
+                  href={service.href}
+                  className="group bg-[var(--card)] rounded-2xl p-6 border border-[var(--border-light)] hover:shadow-xl hover:border-[var(--primary)] transition-all duration-300"
+                >
+                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors ${colorClasses[service.color as keyof typeof colorClasses]}`}>
+                    <Icon className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[var(--text-main)] mb-2 group-hover:text-[var(--primary)] transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-[var(--text-muted)] mb-4 text-sm">
+                    {service.description}
+                  </p>
+                  <ul className="space-y-2">
+                    {service.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 flex items-center gap-2 text-[var(--primary)] font-medium group-hover:gap-3 transition-all">
+                    Hesaplamaya Git
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 bg-[var(--muted)]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">
+              Neden Hakkım Ne?
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <ShieldCheck className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--text-main)] mb-2">%100 Gizlilik</h3>
+              <p className="text-sm text-[var(--text-muted)]">
+                Tüm hesaplamalar tarayıcınızda yapılır. Verileriniz sunucularımıza gönderilmez.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <Clock className="w-8 h-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--text-main)] mb-2">Güncel Veriler</h3>
+              <p className="text-sm text-[var(--text-muted)]">
+                {CURRENT_YEAR} yılı vergi dilimleri, asgari ücret ve tavan tutarları ile hesaplama.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                <Users className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--text-main)] mb-2">Kolay Kullanım</h3>
+              <p className="text-sm text-[var(--text-muted)]">
+                Basit form arayüzü ile saniyeler içinde sonucunuzu öğrenin.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Privacy & Data Security Section */}
-      <section className="mx-auto max-w-[960px] px-4 py-6">
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6">
-          <div className="flex items-start gap-3">
-            <ShieldCheck className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-semibold text-green-800 dark:text-green-300 text-lg mb-2">
-                🔒 Gizlilik ve Veri Güvenliği
-              </h3>
-              <p className="text-green-700 dark:text-green-400 text-sm leading-relaxed">
-                Hakkım Ne? üzerinde yaptığınız tüm hesaplamalar, tamamen <strong>kendi cihazınızda (tarayıcınızda)</strong> gerçekleşir. 
-                Girdiğiniz maaş, tarih ve tazminat bilgileri sunucularımıza gönderilmez, veritabanlarımızda saklanmaz ve 3. şahıslarla paylaşılmaz. 
-                Hesaplamalarınızı güvenle yapabilirsiniz.
-              </p>
-            </div>
-          </div>
+      {/* CTA Section */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-main)] mb-4">
+            Haklarınızı Öğrenmeye Hazır mısınız?
+          </h2>
+          <p className="text-[var(--text-muted)] mb-8">
+            Hemen ücretsiz hesaplama yapın ve yasal haklarınızı öğrenin.
+          </p>
+          <Link
+            href="/kidem-tazminati-hesaplama"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--primary)] text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg"
+          >
+            <Calculator className="w-5 h-5" />
+            Hesaplamaya Başla
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-[var(--card)]/50 mt-8">
-        <div className="mx-auto max-w-[960px] px-4">
+      <footer className="py-8 text-center text-sm text-[var(--text-muted)] border-t border-[var(--border-light)] bg-[var(--card)]/50">
+        <div className="mx-auto max-w-7xl px-4">
           <p className="mb-2">© {CURRENT_YEAR} Hakkım Ne? - Tüm hakları saklıdır.</p>
           <p className="text-xs">
-            Bu araç bilgilendirme amaçlıdır. Kesin hesaplamalar için bir iş hukuku
-            uzmanına danışın.
+            Bu araç bilgilendirme amaçlıdır. Kesin hesaplamalar için bir iş hukuku uzmanına danışın.
           </p>
         </div>
       </footer>

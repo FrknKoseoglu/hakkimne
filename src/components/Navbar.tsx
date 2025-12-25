@@ -24,7 +24,7 @@ export function Navbar() {
         {/* Navigation Links */}
         <div className="hidden md:flex items-center gap-6">
           <Link
-            href="/"
+            href="/kidem-tazminati-hesaplama"
             className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
           >
             Kıdem ve İhbar
