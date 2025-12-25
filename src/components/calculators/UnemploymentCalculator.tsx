@@ -46,7 +46,7 @@ interface CalculationResult {
 
 // Turkish number formatting (e.g., 99.332,50)
 function formatTurkishNumber(value: string): string {
-  let cleaned = value.replace(/[^\d,]/g, "");
+  const cleaned = value.replace(/[^\d,]/g, "");
   const parts = cleaned.split(",");
   let integerPart = parts[0] || "";
   const decimalPart = parts.length > 1 ? parts[1].slice(0, 2) : "";
