@@ -13,11 +13,15 @@ import { Clock, ArrowLeft, Eye } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ preview?: string }>;
 }
 
-async function getPost(slug: string) {
+async function getPost(slug: string, preview: boolean = false) {
   const post = await prisma.post.findUnique({
-    where: { slug, published: true },
+    where: { 
+      slug,
+      ...(preview ? {} : { published: true }),
+    },
     include: {
       author: true,
     },
@@ -40,9 +44,10 @@ async function getMostRead() {
   });
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPost(slug);
+  const { preview } = await searchParams;
+  const post = await getPost(slug, preview === 'true');
 
   if (!post) {
     return { title: "Yazı Bulunamadı" };
@@ -61,10 +66,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function BlogPostPage({ params }: PageProps) {
+export default async function BlogPostPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const { preview } = await searchParams;
+  const isPreview = preview === 'true';
+  
   const [post, mostRead] = await Promise.all([
-    getPost(slug),
+    getPost(slug, isPreview),
     getMostRead(),
   ]);
 
@@ -74,14 +82,24 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const headings = parseHeadings(post.content);
 
-  // Increment view count (fire and forget)
-  fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/posts/${slug}/view`, {
-    method: "POST",
-  }).catch(() => {});
+  // Increment view count only for published posts
+  if (post.published) {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/posts/${slug}/view`, {
+      method: "POST",
+    }).catch(() => {});
+  }
 
   return (
     <div className="min-h-screen bg-[var(--background-light)]">
       <Navbar />
+      
+      {/* Preview Banner */}
+      {isPreview && !post.published && (
+        <div className="bg-yellow-500 text-yellow-900 py-2 px-4 text-center text-sm font-medium">
+          📝 Bu yazı henüz yayınlanmadı. Önizleme modundasınız.
+        </div>
+      )}
+      
       {/* Hero */}
       <section className="bg-gradient-to-br from-[var(--primary)] to-blue-700 text-white py-8">
         <div className="max-w-7xl mx-auto px-4">
@@ -193,24 +211,13 @@ export default async function BlogPostPage({ params }: PageProps) {
           </main>
 
           {/* Sidebar Right */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-6 space-y-6">
+          <aside className="hidden lg:block lg:col-span-2">
+            <div className="sticky top-20 space-y-6">
               <MostReadSidebar posts={mostRead} currentSlug={slug} />
 
               {/* CTA Sidebar */}
               {post.ctaType === "NONE" && (
-                <div className="bg-[var(--card)] rounded-xl p-5 shadow-sm border border-[var(--border-light)]">
-                  <h3 className="font-semibold mb-3">Tazminat Hesapla</h3>
-                  <p className="text-sm text-[var(--text-muted)] mb-4">
-                    Kıdem ve ihbar tazminatınızı hemen hesaplayın.
-                  </p>
-                  <Link
-                    href="/"
-                    className="block w-full text-center py-2 px-4 bg-[var(--primary)] text-white rounded-lg hover:opacity-90 transition-opacity"
-                  >
-                    Hesapla
-                  </Link>
-                </div>
+                <CtaBox ctaType="SEVERANCE_CALC" />
               )}
             </div>
           </aside>

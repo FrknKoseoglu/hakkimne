@@ -4,6 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ProgressBarProvider } from "@/components/ProgressBarProvider";
 import { Toaster } from "sonner";
 
 export const viewport: Viewport = {
@@ -142,9 +143,11 @@ export default function RootLayout({
         {/* End Google tag */}
 
         <ThemeProvider>
-          <Toaster position="top-center" richColors />
-          {children}
-          <SpeedInsights />
+          <ProgressBarProvider>
+            <Toaster position="top-center" richColors />
+            {children}
+            <SpeedInsights />
+          </ProgressBarProvider>
         </ThemeProvider>
       </body>
     </html>

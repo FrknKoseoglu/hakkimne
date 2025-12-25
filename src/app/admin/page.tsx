@@ -154,7 +154,14 @@ export default function AdminDashboard() {
                       >
                         <td className="py-3 px-4">
                           <div>
-                            <p className="font-medium">{post.title}</p>
+                            <a
+                              href={`/blog/${post.slug}${!post.published ? '?preview=true' : ''}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-medium hover:text-[var(--primary)] hover:underline transition-colors"
+                            >
+                              {post.title}
+                            </a>
                             <p className="text-sm text-[var(--text-muted)]">
                               /blog/{post.slug}
                             </p>

@@ -36,6 +36,12 @@ export function Navbar() {
             İşsizlik Maaşı
           </Link>
           <Link
+            href="/sgk-cikis-kodlari"
+            className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+          >
+            SGK Çıkış Kodları
+          </Link>
+          <Link
             href="/blog"
             className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
           >
