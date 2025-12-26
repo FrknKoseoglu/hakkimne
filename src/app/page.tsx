@@ -59,8 +59,7 @@ const services = [
 ];
 
 const stats = [
-  { value: "50.000+", label: "Hesaplama Yapıldı" },
-  { value: "4.9/5", label: "Kullanıcı Puanı" },
+  { value: "100+", label: "Hesaplama Yapıldı" },
   { value: "%100", label: "Ücretsiz" },
   { value: "7/24", label: "Erişilebilir" },
 ];
@@ -104,7 +103,7 @@ export default function Home() {
       {/* Stats Section */}
       <section className="py-8 bg-[var(--card)] border-b border-[var(--border-light)]">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <p className="text-2xl md:text-3xl font-bold text-[var(--primary)]">{stat.value}</p>
