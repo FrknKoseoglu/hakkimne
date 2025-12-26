@@ -2,15 +2,53 @@
 
 import Link from "next/link";
 import { useTheme } from "./ThemeProvider";
-import { Calculator, Sun, Moon } from "lucide-react";
-import { CURRENT_YEAR } from "@/lib/constants";
+import { Calculator, Sun, Moon, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Only apply hide behavior on mobile (< 768px) and when menu is closed
+      if (window.innerWidth < 768 && !isMenuOpen) {
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          // Scrolling down & past 100px
+          setIsVisible(false);
+        } else {
+          // Scrolling up
+          setIsVisible(true);
+        }
+      } else {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY, isMenuOpen]);
+
+  const navLinks = [
+    { href: "/kidem-tazminati-hesaplama", label: "Kıdem ve İhbar" },
+    { href: "/issizlik-maasi-hesaplama", label: "İşsizlik Maaşı" },
+    { href: "/sgk-cikis-kodlari", label: "SGK Çıkış Kodları" },
+    { href: "/blog", label: "Blog" },
+  ];
 
   return (
-    <nav className="sticky top-0 z-50 h-16 border-b border-[var(--border-light)] bg-[var(--card)]/80 backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
+    <nav 
+      className={`sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--card)]/95 backdrop-blur-md transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <div className="flex items-center justify-center size-9 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-[var(--primary)]">
@@ -21,32 +59,17 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Navigation Links */}
+        {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-6">
-          <Link
-            href="/kidem-tazminati-hesaplama"
-            className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
-          >
-            Kıdem ve İhbar
-          </Link>
-          <Link
-            href="/issizlik-maasi-hesaplama"
-            className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
-          >
-            İşsizlik Maaşı
-          </Link>
-          <Link
-            href="/sgk-cikis-kodlari"
-            className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
-          >
-            SGK Çıkış Kodları
-          </Link>
-          <Link
-            href="/blog"
-            className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
-          >
-            Blog
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
         
         <div className="flex items-center gap-3">
@@ -66,9 +89,38 @@ export function Navbar() {
             </span>
           </button>
           
-          <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900/50 px-3 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-200 dark:ring-blue-700">
-            {CURRENT_YEAR} Güncel
-          </span>
+          {/* Mobile Hamburger Menu */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden flex items-center justify-center size-10 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] hover:bg-[var(--muted)] transition-colors cursor-pointer"
+            aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+          >
+            {isMenuOpen ? (
+              <X className="w-5 h-5 text-[var(--text-muted)]" />
+            ) : (
+              <Menu className="w-5 h-5 text-[var(--text-muted)]" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="border-t border-[var(--border-light)] bg-[var(--card)] px-4 py-3 space-y-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setIsMenuOpen(false)}
+              className="block py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
       </div>
     </nav>

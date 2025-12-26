@@ -1,17 +1,22 @@
 "use client";
 
-import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import NextTopLoader from "nextjs-toploader";
 
 export function ProgressBarProvider({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {children}
-      <ProgressBar
-        height="4px"
+      <NextTopLoader
         color="#2563eb"
-        options={{ showSpinner: false }}
-        shallowRouting
+        initialPosition={0.08}
+        crawlSpeed={200}
+        height={3}
+        crawl={true}
+        showSpinner={false}
+        easing="ease"
+        speed={200}
+        shadow="0 0 10px #2563eb,0 0 5px #2563eb"
       />
+      {children}
     </>
   );
 }
