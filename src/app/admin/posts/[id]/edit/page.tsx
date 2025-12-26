@@ -39,7 +39,7 @@ interface Post {
   content: string;
   excerpt: string | null;
   coverImage: string | null;
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "BEDELLI_CALC" | "NONE";
   authorId: string;
   published: boolean;
 }
@@ -459,6 +459,9 @@ export default function EditPostPage() {
                       </SelectItem>
                       <SelectItem value="UNEMPLOYMENT_CALC">
                         İşsizlik Maaşı Hesaplama
+                      </SelectItem>
+                      <SelectItem value="BEDELLI_CALC">
+                        Bedelli Askerlik Hesaplama
                       </SelectItem>
                     </SelectContent>
                   </Select>

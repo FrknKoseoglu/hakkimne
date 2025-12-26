@@ -22,6 +22,7 @@ enum Role {
 enum CtaType {
   SEVERANCE_CALC
   UNEMPLOYMENT_CALC
+  BEDELLI_CALC
   NONE
 }
 

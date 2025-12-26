@@ -427,6 +427,9 @@ export default function NewPostPage() {
                       <SelectItem value="UNEMPLOYMENT_CALC">
                         İşsizlik Maaşı Hesaplama
                       </SelectItem>
+                      <SelectItem value="BEDELLI_CALC">
+                        Bedelli Askerlik Hesaplama
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </CardContent>

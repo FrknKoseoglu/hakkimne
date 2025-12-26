@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Calculator, Briefcase } from "lucide-react";
+import { Calculator, Briefcase, Shield } from "lucide-react";
 
 interface CtaBoxProps {
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "BEDELLI_CALC" | "NONE";
 }
 
 const ctaConfig = {
@@ -21,6 +21,14 @@ const ctaConfig = {
     href: "/issizlik-maasi-hesaplama",
     icon: Briefcase,
     gradient: "from-green-600 to-green-700",
+  },
+  BEDELLI_CALC: {
+    title: "Bedelli Askerlik Ücretini Hesaplayın",
+    description: "2025 güncel bedelli askerlik ücreti ve yoklama kaçağı cezasını hesaplayın.",
+    buttonText: "Hemen Hesapla",
+    href: "/bedelli-askerlik-ucreti-hesaplama",
+    icon: Shield,
+    gradient: "from-amber-600 to-amber-700",
   },
   NONE: null,
 };
@@ -52,3 +60,4 @@ export default function CtaBox({ ctaType }: CtaBoxProps) {
     </div>
   );
 }
+
