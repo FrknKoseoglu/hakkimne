@@ -336,3 +336,66 @@ export const formatPeriodName = (period: FinancialPeriod): string => {
   const isFirstHalf = period.startDate.includes('-01-01');
   return `${year} ${isFirstHalf ? '1.' : '2.'} Yarıyıl`;
 };
+// ============================================
+// Bedelli Askerlik Data
+// ============================================
+
+export interface BedelliDonemData {
+  period: string;
+  MEMUR_MAAS_KATSAYISI: number;
+  BEDELLI_GOSTERGE: number;
+  EK_BEDEL_GOSTERGE: number;
+  IDARI_PARA_CEZASI_KENDILIGINDEN: number;
+  IDARI_PARA_CEZASI_YAKALANMA: number;
+  VALID_FROM: string;
+  VALID_TO: string;
+}
+
+// Historical Bedelli data sorted by date (newest first)
+export const BEDELLI_HISTORY: BedelliDonemData[] = [
+  // --- 2025 Temmuz-Aralık (Current) ---
+  {
+    period: "2025 Temmuz-Aralık",
+    MEMUR_MAAS_KATSAYISI: 1.170211,
+    BEDELLI_GOSTERGE: 240000,
+    EK_BEDEL_GOSTERGE: 3500,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 40.0,
+    IDARI_PARA_CEZASI_YAKALANMA: 80.0,
+    VALID_FROM: '2025-07-01',
+    VALID_TO: '2025-12-31',
+  },
+  // --- 2025 Ocak-Haziran ---
+  {
+    period: "2025 Ocak-Haziran",
+    MEMUR_MAAS_KATSAYISI: 1.012556,
+    BEDELLI_GOSTERGE: 240000,
+    EK_BEDEL_GOSTERGE: 3500,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 35.0,
+    IDARI_PARA_CEZASI_YAKALANMA: 70.0,
+    VALID_FROM: '2025-01-01',
+    VALID_TO: '2025-06-30',
+  },
+];
+
+// Backward compatibility: export current period as default
+export const BEDELLI_ASKERLIK = BEDELLI_HISTORY[0];
+
+/**
+ * Get Bedelli data for a specific date
+ * @param date The date to look up Bedelli data for
+ * @returns The Bedelli period data for that date, or current period if not found
+ */
+export const getBedelliDataByDate = (date: Date): BedelliDonemData => {
+  const targetDateStr = date.toISOString().split('T')[0];
+  
+  const period = BEDELLI_HISTORY.find(p => 
+    targetDateStr >= p.VALID_FROM && targetDateStr <= p.VALID_TO
+  );
+
+  // If date is in future or not found, return current (first) period
+  if (!period) {
+    return BEDELLI_HISTORY[0];
+  }
+
+  return period;
+};

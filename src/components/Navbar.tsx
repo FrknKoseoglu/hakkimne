@@ -38,6 +38,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/kidem-tazminati-hesaplama", label: "Kıdem ve İhbar" },
     { href: "/issizlik-maasi-hesaplama", label: "İşsizlik Maaşı" },
+    { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
     { href: "/sgk-cikis-kodlari", label: "SGK Çıkış Kodları" },
     { href: "/blog", label: "Blog" },
   ];
