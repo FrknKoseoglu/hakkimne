@@ -9,7 +9,12 @@ import {
   ShieldCheck,
   Users,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Wallet,
+  Shield,
+  Home as HomeIcon,
+  Percent,
+  TrendingUp
 } from "lucide-react";
 import { CURRENT_YEAR } from "@/lib/constants";
 
@@ -31,30 +36,67 @@ export const metadata: Metadata = {
   },
 };
 
-const services = [
+// Section 1: İşten Ayrılma Süreci
+const istenAyrilmaTools = [
   {
-    title: "Kıdem ve İhbar Tazminatı",
+    title: "Kıdem & İhbar Tazminatı",
     description: "İşten ayrılırken alacağınız kıdem ve ihbar tazminatını güncel vergi dilimleri ile hesaplayın.",
     icon: Briefcase,
     href: "/kidem-tazminati-hesaplama",
     color: "blue",
-    features: ["Kıdem Tazminatı", "İhbar Tazminatı", "Yıllık İzin Ücreti"],
   },
   {
     title: "İşsizlik Maaşı",
     description: "İşsiz kaldığınızda ne kadar ve kaç ay işsizlik maaşı alacağınızı öğrenin.",
-    icon: Calculator,
+    icon: Wallet,
     href: "/issizlik-maasi-hesaplama",
     color: "purple",
-    features: ["Aylık Maaş Tutarı", "Maaş Süresi", "Tavan Hesaplama"],
   },
   {
-    title: "Blog",
-    description: "İş hukuku, çalışan hakları ve güncel mevzuat hakkında bilgilendirici yazılar.",
+    title: "İstifa Dilekçesi Oluştur",
+    description: "Profesyonel istifa dilekçesi şablonları ile kolayca dilekçenizi hazırlayın.",
     icon: FileText,
-    href: "/blog",
+    href: "/istifa-dilekcesi-olustur",
     color: "green",
-    features: ["Güncel Mevzuat", "Hukuki Bilgiler", "Pratik İpuçları"],
+  },
+  {
+    title: "İhbar Süresi Hesaplama",
+    description: "İstifa ettikten sonra kaç hafta çalışmanız gerektiğini öğrenin.",
+    icon: Clock,
+    href: "/ihbar-suresi-hesaplama",
+    color: "indigo",
+  },
+];
+
+// Section 2: Günlük Finans & Haklar
+const finansHaklarTools = [
+  {
+    title: "Bedelli Askerlik",
+    description: "Bedelli askerlik ücreti ve taksit seçeneklerini güncel rakamlarla hesaplayın.",
+    icon: Shield,
+    href: "/bedelli-askerlik-ucreti-hesaplama",
+    color: "indigo",
+  },
+  {
+    title: "Fazla Mesai Ücreti",
+    description: "Fazla mesai çalışma saatlerinize göre hak ettiğiniz ücreti hesaplayın.",
+    icon: Clock,
+    href: "/fazla-mesai-ucreti-hesaplama",
+    color: "orange",
+  },
+  {
+    title: "Kira Artış Oranı",
+    description: "Yasal sınırlar dahilinde maksimum kira artış oranınızı öğrenin.",
+    icon: HomeIcon,
+    href: "/kira-artis-orani-hesaplama",
+    color: "teal",
+  },
+  {
+    title: "Maaş Zammı Hesaplama",
+    description: "Zam oranınızı veya yeni maaşınızı enflasyon karşılaştırmalı hesaplayın.",
+    icon: TrendingUp,
+    href: "/maas-zammi-hesaplama",
+    color: "green",
   },
 ];
 
@@ -63,6 +105,67 @@ const stats = [
   { value: "%100", label: "Ücretsiz" },
   { value: "7/24", label: "Erişilebilir" },
 ];
+
+// Color mapping for tool cards
+const colorClasses: Record<string, { bg: string; icon: string; hover: string }> = {
+  blue: {
+    bg: "bg-blue-100 dark:bg-blue-900/30",
+    icon: "text-blue-600 dark:text-blue-400",
+    hover: "group-hover:bg-blue-600 group-hover:text-white",
+  },
+  purple: {
+    bg: "bg-purple-100 dark:bg-purple-900/30",
+    icon: "text-purple-600 dark:text-purple-400",
+    hover: "group-hover:bg-purple-600 group-hover:text-white",
+  },
+  green: {
+    bg: "bg-green-100 dark:bg-green-900/30",
+    icon: "text-green-600 dark:text-green-400",
+    hover: "group-hover:bg-green-600 group-hover:text-white",
+  },
+  indigo: {
+    bg: "bg-indigo-100 dark:bg-indigo-900/30",
+    icon: "text-indigo-600 dark:text-indigo-400",
+    hover: "group-hover:bg-indigo-600 group-hover:text-white",
+  },
+  orange: {
+    bg: "bg-orange-100 dark:bg-orange-900/30",
+    icon: "text-orange-600 dark:text-orange-400",
+    hover: "group-hover:bg-orange-600 group-hover:text-white",
+  },
+  teal: {
+    bg: "bg-teal-100 dark:bg-teal-900/30",
+    icon: "text-teal-600 dark:text-teal-400",
+    hover: "group-hover:bg-teal-600 group-hover:text-white",
+  },
+};
+
+// Reusable Tool Card Component
+function ToolCard({ tool }: { tool: typeof istenAyrilmaTools[0] }) {
+  const Icon = tool.icon;
+  const colors = colorClasses[tool.color];
+
+  return (
+    <Link
+      href={tool.href}
+      className="group flex flex-col h-full bg-[var(--card)] rounded-2xl p-6 border border-[var(--border-light)] hover:shadow-xl hover:border-[var(--primary)] transition-all duration-300"
+    >
+      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors ${colors.bg} ${colors.icon} ${colors.hover}`}>
+        <Icon className="w-7 h-7" />
+      </div>
+      <h3 className="text-xl font-bold text-[var(--text-main)] mb-2 group-hover:text-[var(--primary)] transition-colors">
+        {tool.title}
+      </h3>
+      <p className="text-[var(--text-muted)] text-sm flex-grow">
+        {tool.description}
+      </p>
+      <div className="mt-4 flex items-center gap-2 text-[var(--primary)] font-medium group-hover:gap-3 transition-all">
+        Hesaplamaya Git
+        <ArrowRight className="w-4 h-4" />
+      </div>
+    </Link>
+  );
+}
 
 export default function Home() {
   return (
@@ -114,63 +217,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-16 md:py-20">
+      {/* Section 1: İşten Ayrılma Süreci */}
+      <section className="py-16 md:py-20 bg-[var(--background-light)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">
-              Hesaplama Araçlarımız
+              İşten Ayrılma Süreci
             </h2>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
-              {CURRENT_YEAR} güncel mevzuata uygun, güvenilir ve ücretsiz hesaplama araçları
+              İşten çıkarken haklarınızı öğrenin ve sürecinizi yönetin.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {services.map((service, index) => {
-              const Icon = service.icon;
-              const colorClasses = {
-                blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white",
-                purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white",
-                green: "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 group-hover:bg-green-600 group-hover:text-white",
-              };
-              
-              return (
-                <Link
-                  key={index}
-                  href={service.href}
-                  className="group bg-[var(--card)] rounded-2xl p-6 border border-[var(--border-light)] hover:shadow-xl hover:border-[var(--primary)] transition-all duration-300"
-                >
-                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-colors ${colorClasses[service.color as keyof typeof colorClasses]}`}>
-                    <Icon className="w-7 h-7" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[var(--text-main)] mb-2 group-hover:text-[var(--primary)] transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-[var(--text-muted)] mb-4 text-sm">
-                    {service.description}
-                  </p>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-4 flex items-center gap-2 text-[var(--primary)] font-medium group-hover:gap-3 transition-all">
-                    Hesaplamaya Git
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </Link>
-              );
-            })}
+            {istenAyrilmaTools.map((tool, index) => (
+              <ToolCard key={index} tool={tool} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section 2: Günlük Finans & Haklar */}
+      <section className="py-16 md:py-20 bg-[var(--muted)]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">
+              Günlük Finans & Haklar
+            </h2>
+            <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
+              Maaşınız, kiranız ve askerlik süreciniz için pratik hesaplamalar.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {finansHaklarTools.map((tool, index) => (
+              <ToolCard key={index} tool={tool} />
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-[var(--muted)]">
+      <section className="py-16 bg-[var(--background-light)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">
@@ -213,7 +301,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16">
+      <section className="py-16 bg-[var(--muted)]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-main)] mb-4">
             Haklarınızı Öğrenmeye Hazır mısınız?

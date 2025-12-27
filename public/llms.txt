@@ -25,6 +25,16 @@
 - **Function:** Calculates overtime pay for hours exceeding 45h/week (1.5x) and national holiday work (extra daily wage).
 - **Data:** Based on 225 hours/month standard and Turkish Labor Law coefficients.
 
+### 5. Notice Period Calculator (İhbar Süresi)
+- **URL:** https://www.hakkimne.com/ihbar-suresi-hesaplama
+- **Function:** Calculates required notice period based on tenure and estimates last working day.
+- **Data:** Based on Labor Law 4857/17 (2-8 weeks depending on tenure).
+
+### 6. Salary Raise Calculator (Maaş Zammı)
+- **URL:** https://www.hakkimne.com/maas-zammi-hesaplama
+- **Function:** Calculates new salary from raise percentage or determines raise rate from old/new salary.
+- **Data:** Includes inflation comparison (TÜFE reference).
+
 ## 📚 Resources & Blog
 - **SGK Çıkış Kodları:** https://www.hakkimne.com/sgk-cikis-kodlari
   - Complete list of all SGK termination codes with severance/notice pay eligibility.

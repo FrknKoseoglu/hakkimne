@@ -35,6 +35,18 @@ export async function GET() {
 - **Holiday Rate:** Monthly Salary / 30 (1 extra day's wage for national holidays).
 - **Yearly Limit:** Maximum 270 hours of overtime per year requires written consent.
 
+### E. Notice Period (İhbar Süresi) - Labor Law 4857/17
+- **0-6 months tenure:** 2 weeks (14 days)
+- **6-18 months tenure:** 4 weeks (28 days)
+- **18 months - 3 years tenure:** 6 weeks (42 days)
+- **3+ years tenure:** 8 weeks (56 days)
+- **Note:** Applies to both employee resignation and employer termination.
+
+### F. Salary Raise (Maaş Zammı)
+- **Rate to Amount:** New Salary = Current Salary + (Current Salary × Rate / 100)
+- **Amount to Rate:** Rate = ((New Salary - Current Salary) / Current Salary) × 100
+- **Inflation Reference:** Compared against annual TÜFE (Consumer Price Index).
+
 `;
 
   // Dynamic content: Fetch latest blog posts

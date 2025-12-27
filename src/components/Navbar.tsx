@@ -20,6 +20,7 @@ const navCategories = {
     items: [
       { href: "/kidem-tazminati-hesaplama", label: "Tazminat Hesaplama" },
       { href: "/issizlik-maasi-hesaplama", label: "İşsizlik Maaşı" },
+      { href: "/ihbar-suresi-hesaplama", label: "İhbar Süresi" },
       { href: "/istifa-dilekcesi-olustur", label: "İstifa Dilekçesi Oluştur" },
     ],
   },
@@ -29,6 +30,7 @@ const navCategories = {
       { href: "/fazla-mesai-ucreti-hesaplama", label: "Fazla Mesai" },
       { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
       { href: "/kira-artis-orani-hesaplama", label: "Kira Artış Oranı" },
+      { href: "/maas-zammi-hesaplama", label: "Maaş Zammı" },
     ],
   },
 };
