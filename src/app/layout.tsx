@@ -5,6 +5,7 @@ import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProgressBarProvider } from "@/components/ProgressBarProvider";
+import { ContactForm } from "@/components/ContactForm";
 import { Toaster } from "sonner";
 
 export const viewport: Viewport = {
@@ -148,6 +149,7 @@ export default function RootLayout({
             {children}
             <SpeedInsights />
           </ProgressBarProvider>
+          <ContactForm />
         </ThemeProvider>
       </body>
     </html>

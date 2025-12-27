@@ -79,3 +79,41 @@ model Post {
   @@index([published, publishedAt])
   @@index([views])
 }
+
+enum MessageType {
+  COMPLAINT
+  SUGGESTION
+  OTHER
+}
+
+enum FeatureType {
+  SEVERANCE_CALC
+  UNEMPLOYMENT_CALC
+  BEDELLI_CALC
+  OVERTIME_CALC
+  SGK_CODES
+  BLOG
+  OTHER
+}
+
+/// Contact form messages
+model ContactMessage {
+  id          String      @id @default(cuid())
+  name        String
+  email       String
+  messageType MessageType
+  feature     FeatureType
+  message     String      @db.Text
+  
+  // Spam protection
+  ipAddress   String?
+  userAgent   String?
+  
+  // Status
+  isRead      Boolean     @default(false)
+  
+  createdAt   DateTime    @default(now())
+  
+  @@index([isRead])
+  @@index([createdAt])
+}
