@@ -2,14 +2,43 @@
 
 import Link from "next/link";
 import { useTheme } from "./ThemeProvider";
-import { Calculator, Sun, Moon, Menu, X } from "lucide-react";
+import { Calculator, Sun, Moon, Menu, X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+
+// Navigation structure
+const navCategories = {
+  istenCikis: {
+    label: "İşten Çıkış",
+    items: [
+      { href: "/kidem-tazminati-hesaplama", label: "Tazminat Hesaplama" },
+      { href: "/issizlik-maasi-hesaplama", label: "İşsizlik Maaşı" },
+      { href: "/istifa-dilekcesi-olustur", label: "İstifa Dilekçesi Oluştur" },
+    ],
+  },
+  hesaplamalar: {
+    label: "Hesaplamalar",
+    items: [
+      { href: "/fazla-mesai-ucreti-hesaplama", label: "Fazla Mesai" },
+      { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
+      { href: "/kira-artis-orani-hesaplama", label: "Kira Artış Oranı" },
+    ],
+  },
+};
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,16 +64,9 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY, isMenuOpen]);
 
-  const navLinks = [
-    { href: "/kidem-tazminati-hesaplama", label: "Kıdem ve İhbar" },
-    { href: "/issizlik-maasi-hesaplama", label: "İşsizlik Maaşı" },
-    { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
-    { href: "/fazla-mesai-ucreti-hesaplama", label: "Fazla Mesai" },
-    { href: "/kira-artis-orani-hesaplama", label: "Kira Artışı" },
-    { href: "/istifa-dilekcesi-olustur", label: "İstifa Dilekçesi" },
-    { href: "/sgk-cikis-kodlari", label: "SGK Çıkış Kodları" },
-    { href: "/blog", label: "Blog" },
-  ];
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
   return (
     <nav 
@@ -63,17 +85,63 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-2">
+          <NavigationMenu>
+            <NavigationMenuList>
+              {/* İşten Çıkış Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>{navCategories.istenCikis.label}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[220px] gap-1 p-2">
+                    {navCategories.istenCikis.items.map((item) => (
+                      <li key={item.href}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={item.href}
+                            className="block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-[var(--muted)] hover:text-[var(--text-main)] text-[var(--text-muted)]"
+                          >
+                            {item.label}
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              {/* Hesaplamalar Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>{navCategories.hesaplamalar.label}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[220px] gap-1 p-2">
+                    {navCategories.hesaplamalar.items.map((item) => (
+                      <li key={item.href}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={item.href}
+                            className="block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-[var(--muted)] hover:text-[var(--text-main)] text-[var(--text-muted)]"
+                          >
+                            {item.label}
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              {/* Blog Link */}
+              <NavigationMenuItem>
+                <Link
+                  href="/blog"
+                  className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors bg-transparent hover:bg-[var(--muted)] text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                >
+                  Blog
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
         
         <div className="flex items-center gap-3">
@@ -111,23 +179,86 @@ export function Navbar() {
       {/* Mobile Menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+          isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="border-t border-[var(--border-light)] bg-[var(--card)] px-4 py-3 space-y-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setIsMenuOpen(false)}
-              className="block py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors"
+        <div className="border-t border-[var(--border-light)] bg-[var(--card)] px-4 py-3 space-y-2">
+          {/* İşten Çıkış Section */}
+          <div className="space-y-1">
+            <button
+              onClick={() => toggleSection("istenCikis")}
+              className="flex items-center justify-between w-full py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors cursor-pointer"
             >
-              {link.label}
-            </Link>
-          ))}
+              <span>{navCategories.istenCikis.label}</span>
+              <ChevronDown
+                className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${
+                  expandedSection === "istenCikis" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            <div
+              className={`overflow-hidden transition-all duration-200 ${
+                expandedSection === "istenCikis" ? "max-h-48" : "max-h-0"
+              }`}
+            >
+              <div className="pl-4 space-y-1">
+                {navCategories.istenCikis.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block py-2.5 px-4 rounded-lg text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Hesaplamalar Section */}
+          <div className="space-y-1">
+            <button
+              onClick={() => toggleSection("hesaplamalar")}
+              className="flex items-center justify-between w-full py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors cursor-pointer"
+            >
+              <span>{navCategories.hesaplamalar.label}</span>
+              <ChevronDown
+                className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${
+                  expandedSection === "hesaplamalar" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            <div
+              className={`overflow-hidden transition-all duration-200 ${
+                expandedSection === "hesaplamalar" ? "max-h-48" : "max-h-0"
+              }`}
+            >
+              <div className="pl-4 space-y-1">
+                {navCategories.hesaplamalar.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block py-2.5 px-4 rounded-lg text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Blog Link */}
+          <Link
+            href="/blog"
+            onClick={() => setIsMenuOpen(false)}
+            className="block py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors"
+          >
+            Blog
+          </Link>
         </div>
       </div>
     </nav>
   );
 }
-
