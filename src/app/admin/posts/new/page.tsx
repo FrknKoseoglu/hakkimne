@@ -430,6 +430,15 @@ export default function NewPostPage() {
                       <SelectItem value="BEDELLI_CALC">
                         Bedelli Askerlik Hesaplama
                       </SelectItem>
+                      <SelectItem value="OVERTIME_CALC">
+                        Fazla Mesai Hesaplama
+                      </SelectItem>
+                      <SelectItem value="RENT_CALC">
+                        Kira Artış Oranı Hesaplama
+                      </SelectItem>
+                      <SelectItem value="RESIGNATION_LETTER">
+                        İstifa Dilekçesi Oluşturucu
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </CardContent>

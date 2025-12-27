@@ -39,7 +39,7 @@ interface Post {
   content: string;
   excerpt: string | null;
   coverImage: string | null;
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "BEDELLI_CALC" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "NONE";
   authorId: string;
   published: boolean;
 }
@@ -462,6 +462,15 @@ export default function EditPostPage() {
                       </SelectItem>
                       <SelectItem value="BEDELLI_CALC">
                         Bedelli Askerlik Hesaplama
+                      </SelectItem>
+                      <SelectItem value="OVERTIME_CALC">
+                        Fazla Mesai Hesaplama
+                      </SelectItem>
+                      <SelectItem value="RENT_CALC">
+                        Kira Artış Oranı Hesaplama
+                      </SelectItem>
+                      <SelectItem value="RESIGNATION_LETTER">
+                        İstifa Dilekçesi Oluşturucu
                       </SelectItem>
                     </SelectContent>
                   </Select>

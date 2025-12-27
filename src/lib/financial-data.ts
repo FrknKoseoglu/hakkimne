@@ -399,3 +399,36 @@ export const getBedelliDataByDate = (date: Date): BedelliDonemData => {
 
   return period;
 };
+
+// ============================================
+// RENT INCREASE RATES (Kira Artış Oranları)
+// ============================================
+// TÜFE 12 Aylık Ortalamalara Göre Değişim Oranı
+// Source: TÜİK (Turkish Statistical Institute)
+// Update monthly when TÜİK releases new data
+
+export interface RentRatePeriod {
+  label: string;  // Display name (e.g., "Aralık 2025")
+  value: string;  // ISO format (e.g., "2025-12")
+  rate: number;   // CPI 12-month average change rate
+}
+
+export const RENT_RATES: RentRatePeriod[] = [
+  { label: "Aralık 2025", value: "2025-12", rate: 35.91 },
+  { label: "Kasım 2025", value: "2025-11", rate: 34.85 },
+  { label: "Ekim 2025", value: "2025-10", rate: 33.50 },
+  { label: "Eylül 2025", value: "2025-09", rate: 41.49 },
+  { label: "Ağustos 2025", value: "2025-08", rate: 44.19 },
+  { label: "Temmuz 2025", value: "2025-07", rate: 48.08 },
+  { label: "Haziran 2025", value: "2025-06", rate: 52.55 },
+  { label: "Mayıs 2025", value: "2025-05", rate: 57.00 },
+  { label: "Nisan 2025", value: "2025-04", rate: 59.06 },
+  { label: "Mart 2025", value: "2025-03", rate: 59.53 },
+  { label: "Şubat 2025", value: "2025-02", rate: 59.48 },
+  { label: "Ocak 2025", value: "2025-01", rate: 59.58 },
+];
+
+// Backward compatibility
+export const RENT_INCREASE_RATE_CPI = RENT_RATES[0].rate;
+export const RENT_INCREASE_RATE_MONTH = RENT_RATES[0].label;
+

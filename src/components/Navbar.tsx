@@ -40,6 +40,8 @@ export function Navbar() {
     { href: "/issizlik-maasi-hesaplama", label: "İşsizlik Maaşı" },
     { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
     { href: "/fazla-mesai-ucreti-hesaplama", label: "Fazla Mesai" },
+    { href: "/kira-artis-orani-hesaplama", label: "Kira Artışı" },
+    { href: "/istifa-dilekcesi-olustur", label: "İstifa Dilekçesi" },
     { href: "/sgk-cikis-kodlari", label: "SGK Çıkış Kodları" },
     { href: "/blog", label: "Blog" },
   ];

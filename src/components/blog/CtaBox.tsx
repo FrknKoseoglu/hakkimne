@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Calculator, Briefcase, Shield } from "lucide-react";
+import { Calculator, Briefcase, Shield, Clock, Home, FileText } from "lucide-react";
 
 interface CtaBoxProps {
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "BEDELLI_CALC" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "NONE";
 }
 
 const ctaConfig = {
@@ -29,6 +29,30 @@ const ctaConfig = {
     href: "/bedelli-askerlik-ucreti-hesaplama",
     icon: Shield,
     gradient: "from-amber-600 to-amber-700",
+  },
+  OVERTIME_CALC: {
+    title: "Fazla Mesai Ücretinizi Hesaplayın",
+    description: "Fazla mesai ve resmi tatil çalışmalarınızın karşılığını öğrenin.",
+    buttonText: "Hemen Hesapla",
+    href: "/fazla-mesai-ucreti-hesaplama",
+    icon: Clock,
+    gradient: "from-purple-600 to-purple-700",
+  },
+  RENT_CALC: {
+    title: "Kira Artış Oranını Hesaplayın",
+    description: "Yasal TÜFE oranına göre yeni kira bedelinizi hesaplayın.",
+    buttonText: "Hemen Hesapla",
+    href: "/kira-artis-orani-hesaplama",
+    icon: Home,
+    gradient: "from-teal-600 to-teal-700",
+  },
+  RESIGNATION_LETTER: {
+    title: "İstifa Dilekçenizi Oluşturun",
+    description: "Profesyonel istifa dilekçenizi saniyeler içinde hazırlayın ve yazdırın.",
+    buttonText: "Dilekçe Oluştur",
+    href: "/istifa-dilekcesi-olustur",
+    icon: FileText,
+    gradient: "from-rose-600 to-rose-700",
   },
   NONE: null,
 };
@@ -60,4 +84,3 @@ export default function CtaBox({ ctaType }: CtaBoxProps) {
     </div>
   );
 }
-
