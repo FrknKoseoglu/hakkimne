@@ -21,13 +21,19 @@
 - **Data:** Updated semi-annually based on Civil Servant Salary Coefficient (Memur Maaş Katsayısı).
 
 ## 📚 Resources & Blog
-- **URL:** https://www.hakkimne.com/blog
-- **Content:** Guides on Turkish Labor Law, SGK regulations, employee rights, and step-by-step application tutorials (e-Devlet, İŞKUR).
+- **SGK Çıkış Kodları:** https://www.hakkimne.com/sgk-cikis-kodlari
+  - Complete list of all SGK termination codes with severance/notice pay eligibility.
+- **Blog:** https://www.hakkimne.com/blog
+  - Guides on Turkish Labor Law, SGK regulations, employee rights, and step-by-step application tutorials (e-Devlet, İŞKUR).
 
 ## 🏛️ Data Sources & Compliance
 All calculations are based on official data from:
 - **SGK (Social Security Institution)**
 - **Official Gazette (Resmi Gazete)**
 - **Ministry of Treasury and Finance**
+
+## � Full Context & Content
+For detailed legal logic, calculation formulas, and blog summaries, please read our full context file:
+- [Full Context (llms-full.txt)](https://www.hakkimne.com/llms-full.txt)
 
 *Last Updated: December 2025*
