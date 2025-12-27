@@ -29,6 +29,12 @@ export async function GET() {
 - **Penalty (Yoklama Kaçağı):** Additional monthly fee based on evasion duration.
 - **Rule:** "Month or fraction thereof" (Ay ve kesri) rule applies. 1 day late counts as 1 month penalty.
 
+### D. Overtime Pay (Fazla Mesai Ücreti)
+- **Hourly Rate:** Monthly Salary / 225 hours.
+- **Overtime Rate:** Hourly Rate × 1.5 (50% increase for hours over 45/week).
+- **Holiday Rate:** Monthly Salary / 30 (1 extra day's wage for national holidays).
+- **Yearly Limit:** Maximum 270 hours of overtime per year requires written consent.
+
 `;
 
   // Dynamic content: Fetch latest blog posts

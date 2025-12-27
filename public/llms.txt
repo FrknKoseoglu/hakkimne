@@ -20,6 +20,11 @@
 - **Function:** Calculates the standard fee for 2025 and additional penalties for draft evaders (Yoklama Kaçağı / Bakaya).
 - **Data:** Updated semi-annually based on Civil Servant Salary Coefficient (Memur Maaş Katsayısı).
 
+### 4. Overtime Pay Calculator (Fazla Mesai Ücreti)
+- **URL:** https://www.hakkimne.com/fazla-mesai-ucreti-hesaplama
+- **Function:** Calculates overtime pay for hours exceeding 45h/week (1.5x) and national holiday work (extra daily wage).
+- **Data:** Based on 225 hours/month standard and Turkish Labor Law coefficients.
+
 ## 📚 Resources & Blog
 - **SGK Çıkış Kodları:** https://www.hakkimne.com/sgk-cikis-kodlari
   - Complete list of all SGK termination codes with severance/notice pay eligibility.

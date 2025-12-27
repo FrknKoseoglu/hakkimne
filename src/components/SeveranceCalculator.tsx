@@ -39,7 +39,8 @@ import {
   MessageCircle,
   Twitter,
   Link,
-  RotateCcw
+  RotateCcw,
+  Copy
 } from "lucide-react";
 import { toast } from "sonner";
 import { CURRENT_YEAR } from "@/lib/constants";
@@ -1033,6 +1034,90 @@ function ResultsCard({ result, formValues, formModifiedSinceCalc, onRecalculate 
     }
   };
 
+  const handleCopyResult = async () => {
+    try {
+      // Build comprehensive plain text result
+      let resultText = `📊 KIDEM VE İHBAR TAZMİNATI HESAPLAMA SONUCU\n`;
+      resultText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      
+      // Tenure info
+      resultText += `📅 ÇALIŞMA SÜRESİ\n`;
+      resultText += `Başlangıç: ${formValues.startDate}\n`;
+      resultText += `Bitiş: ${formValues.endDate}\n`;
+      resultText += `Toplam: ${result.tenure.years} yıl, ${result.tenure.months} ay, ${result.tenure.days} gün\n\n`;
+      
+      // Gross salary info
+      resultText += `💼 BRÜT MAAŞ BİLGİLERİ\n`;
+      resultText += `Brüt Maaş: ${formValues.grossSalary ? formatCurrency(parseTurkishNumber(formValues.grossSalary)) : 'Belirtilmedi'}\n`;
+      if (result.isCeilingApplied) {
+        resultText += `⚠️ Kıdem Tavanı Uygulandı\n`;
+      }
+      resultText += `\n`;
+
+      // Kıdem Tazminatı
+      if (result.severanceEligible) {
+        resultText += `💰 KIDEM TAZMİNATI\n`;
+        resultText += `Brüt Tutar: ${formatCurrency(result.severanceGross)}\n`;
+        resultText += `Damga Vergisi: -${formatCurrency(result.severanceStampTax)}\n`;
+        resultText += `Net Ödeme: ${formatCurrency(result.severanceNet)}\n\n`;
+      } else {
+        resultText += `💰 KIDEM TAZMİNATI: Hak edilmedi (1 yıldan az çalışma)\n\n`;
+      }
+
+      // İhbar Tazminatı
+      resultText += `⚠️ İHBAR TAZMİNATI (${result.noticeWeeks} Hafta)\n`;
+      resultText += `Brüt Tutar: ${formatCurrency(result.noticeGross)}\n`;
+      resultText += `Gelir Vergisi (%${result.noticeTaxRate.toFixed(0)}): -${formatCurrency(result.noticeIncomeTax)}\n`;
+      resultText += `Asgari Ücret İstisnası: +${formatCurrency(result.noticeIncomeTaxExemption)}\n`;
+      resultText += `Damga Vergisi: -${formatCurrency(result.noticeStampTax)}\n`;
+      resultText += `Net Ödeme: ${formatCurrency(result.noticeNet)}\n\n`;
+
+      // Yıllık İzin
+      if (result.unusedLeaveGross > 0) {
+        resultText += `🌴 YILLIK İZİN ÜCRETİ\n`;
+        resultText += `Brüt Tutar: ${formatCurrency(result.unusedLeaveGross)}\n`;
+        resultText += `SGK Primi (%14): -${formatCurrency(result.unusedLeaveSgk)}\n`;
+        resultText += `İşsizlik Sig. (%1): -${formatCurrency(result.unusedLeaveUnemployment)}\n`;
+        resultText += `Gelir Vergisi (%${result.unusedLeaveTaxRate.toFixed(0)}): -${formatCurrency(result.unusedLeaveIncomeTax)}\n`;
+        resultText += `Asgari Ücret İstisnası: +${formatCurrency(result.unusedLeaveIncomeTaxExemption)}\n`;
+        resultText += `Damga Vergisi: -${formatCurrency(result.unusedLeaveStampTax)}\n`;
+        resultText += `Net Ödeme: ${formatCurrency(result.unusedLeaveNet)}\n\n`;
+      }
+
+      // Hak Edilen Maaş
+      if (result.proRatedDays > 0) {
+        resultText += `👛 HAK EDİLEN MAAŞ (${result.proRatedDays} Gün)\n`;
+        resultText += `Brüt Tutar: ${formatCurrency(result.proRatedSalaryGross)}\n`;
+        resultText += `SGK Primi (%14): -${formatCurrency(result.proRatedSalarySgk)}\n`;
+        resultText += `İşsizlik Sig. (%1): -${formatCurrency(result.proRatedSalaryUnemployment)}\n`;
+        resultText += `Gelir Vergisi (%${result.proRatedTaxRate.toFixed(0)}): -${formatCurrency(result.proRatedSalaryIncomeTax)}\n`;
+        resultText += `Asgari Ücret İstisnası: +${formatCurrency(result.proRatedSalaryIncomeTaxExemption)}\n`;
+        resultText += `Damga Vergisi: -${formatCurrency(result.proRatedSalaryStampTax)}\n`;
+        resultText += `Net Ödeme: ${formatCurrency(result.proRatedSalaryNet)}\n\n`;
+      }
+
+      // Toplam Özet
+      resultText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+      resultText += `📊 TOPLAM ÖZET\n`;
+      resultText += `Toplam Brüt: ${formatCurrency(dynamicGrossTotal)}\n`;
+      resultText += `SGK Kesintisi: -${formatCurrency(dynamicSgk + dynamicUnemployment)}\n`;
+      resultText += `Gelir Vergisi: -${formatCurrency(dynamicIncomeTax)}\n`;
+      resultText += `Damga Vergisi: -${formatCurrency(dynamicStampTax)}\n`;
+      resultText += `Vergi İstisnası: +${formatCurrency(dynamicExemption)}\n`;
+      resultText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+      resultText += `💵 NET ELE GEÇEN TOPLAM: ${formatCurrency(dynamicTotal)}\n\n`;
+      
+      resultText += `📌 ${result.periodName} verileriyle hesaplanmıştır.\n`;
+      resultText += `🔗 Kaynak: hakkimne.com`;
+
+      await navigator.clipboard.writeText(resultText);
+      toast.success("Sonuç panoya kopyalandı!");
+      setIsShareDialogOpen(false);
+    } catch (error) {
+      toast.error("Sonuç kopyalanamadı");
+    }
+  };
+
   const shareUrl = generateShareUrl(formValues);
   const shareMessage = `🎯 Hakkım Ne? - Tazminat Hesabı\n💰 Net Ele Geçen: ${formatCurrency(displayedTotal)}\n📊 Toplam Brüt: ${formatCurrency(displayedGrossTotal)}\n⏱️ Çalışma Süresi: ${result.tenure.years} Yıl\n\nDetaylar:`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage + ' ' + shareUrl)}`;
@@ -1301,6 +1386,15 @@ function ResultsCard({ result, formValues, formModifiedSinceCalc, onRecalculate 
             >
               <Link className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform" />
               <span className="font-medium text-[var(--text-main)]">Linki Kopyala</span>
+            </button>
+
+            {/* Copy Result - for AI assistants */}
+            <button
+              onClick={handleCopyResult}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[var(--border-light)] bg-[var(--background-light)] hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-500 transition-colors group cursor-pointer"
+            >
+              <Copy className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
+              <span className="font-medium text-[var(--text-main)]">Sonucu Kopyala</span>
             </button>
           </div>
         </DialogContent>
