@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       url: result.url,
-      pathname: result.pathname,
+      publicId: result.publicId,
     });
   } catch (error) {
     console.error("Failed to upload image:", error);
