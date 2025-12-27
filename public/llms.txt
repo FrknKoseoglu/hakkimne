@@ -1,0 +1,33 @@
+# Hakkım Ne? - Turkish Labor Law & Financial Calculators
+
+> **Website:** https://www.hakkimne.com
+> **Description:** The most accurate and up-to-date calculation tools for Turkish Severance Pay (Kıdem Tazminatı), Unemployment Benefits (İşsizlik Maaşı), and Paid Military Service (Bedelli Askerlik) fees for 2025.
+
+## 🛠️ Main Tools & Calculators
+
+### 1. Severance & Notice Pay Calculator (Kıdem ve İhbar Tazminatı)
+- **URL:** https://www.hakkimne.com/
+- **Function:** Calculates net severance and notice pay based on entry/exit dates and gross salary.
+- **Key Features:** Includes all SGK exit codes (2025), tax deductions, and ceiling (tavan) limits.
+
+### 2. Unemployment Benefits Calculator (İşsizlik Maaşı)
+- **URL:** https://www.hakkimne.com/issizlik-maasi-hesaplama
+- **Function:** Determines eligibility and calculates the monthly unemployment benefit amount and duration.
+- **Data:** Based on the last 4 months of gross salary and total premium days (600/900/1080 days).
+
+### 3. Paid Military Service Calculator (Bedelli Askerlik)
+- **URL:** https://www.hakkimne.com/bedelli-askerlik-ucreti-hesaplama
+- **Function:** Calculates the standard fee for 2025 and additional penalties for draft evaders (Yoklama Kaçağı / Bakaya).
+- **Data:** Updated semi-annually based on Civil Servant Salary Coefficient (Memur Maaş Katsayısı).
+
+## 📚 Resources & Blog
+- **URL:** https://www.hakkimne.com/blog
+- **Content:** Guides on Turkish Labor Law, SGK regulations, employee rights, and step-by-step application tutorials (e-Devlet, İŞKUR).
+
+## 🏛️ Data Sources & Compliance
+All calculations are based on official data from:
+- **SGK (Social Security Institution)**
+- **Official Gazette (Resmi Gazete)**
+- **Ministry of Treasury and Finance**
+
+*Last Updated: December 2025*
