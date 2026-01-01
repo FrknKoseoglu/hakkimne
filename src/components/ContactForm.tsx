@@ -35,6 +35,7 @@ const FEATURE_TYPES = [
   { value: "UNEMPLOYMENT_CALC", label: "İşsizlik Maaşı" },
   { value: "NOTICE_PERIOD_CALC", label: "İhbar Süresi" },
   { value: "ANNUAL_LEAVE_CALC", label: "Yıllık İzin" },
+  { value: "ANNUAL_LEAVE_PAYMENT_CALC", label: "Yıllık İzin Ücreti" },
   { value: "NET_TO_GROSS_CALC", label: "Netten Brüte Hesaplama" },
   { value: "BEDELLI_CALC", label: "Bedelli Askerlik" },
   { value: "OVERTIME_CALC", label: "Fazla Mesai" },

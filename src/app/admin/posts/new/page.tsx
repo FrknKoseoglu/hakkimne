@@ -451,6 +451,9 @@ export default function NewPostPage() {
                       <SelectItem value="ANNUAL_LEAVE_CALC">
                         Yıllık İzin Hesaplama
                       </SelectItem>
+                      <SelectItem value="ANNUAL_LEAVE_PAYMENT_CALC">
+                        Yıllık İzin Ücreti Hesaplama
+                      </SelectItem>
                       <SelectItem value="NET_TO_GROSS_CALC">
                         Netten Brüte Hesaplama
                       </SelectItem>

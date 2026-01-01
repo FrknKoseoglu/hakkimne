@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Calculator, Briefcase, Shield, Clock, Home, FileText, Calendar } from "lucide-react";
+import { Calculator, Briefcase, Shield, Clock, Home, FileText, Calendar, DollarSign } from "lucide-react";
 
 interface CtaBoxProps {
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NOTICE_PERIOD_CALC" | "AGI_CALC" | "MTV_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "ANNUAL_LEAVE_CALC" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NOTICE_PERIOD_CALC" | "AGI_CALC" | "MTV_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "ANNUAL_LEAVE_CALC" | "ANNUAL_LEAVE_PAYMENT_CALC" | "NET_TO_GROSS_CALC" | "NONE";
 }
 
 const ctaConfig = {
@@ -85,6 +85,22 @@ const ctaConfig = {
     href: "/yillik-izin-hesaplama",
     icon: Calendar,
     gradient: "from-emerald-600 to-emerald-700",
+  },
+  ANNUAL_LEAVE_PAYMENT_CALC: {
+    title: "Yıllık İzin Ücretinizi Hesaplayın",
+    description: "Kullanılmayan yıllık izin günlerinizin ücretini hesaplayın.",
+    buttonText: "Hemen Hesapla",
+    href: "/yillik-izin-ucreti-hesaplama",
+    icon: DollarSign,
+    gradient: "from-green-600 to-green-700",
+  },
+  NET_TO_GROSS_CALC: {
+    title: "Netten Brüte Hesaplama",
+    description: "Net maaşınızdan brüt maaşınızı ve işverene maliyeti hesaplayın.",
+    buttonText: "Hemen Hesapla",
+    href: "/netten-brute-hesaplama",
+    icon: Calculator,
+    gradient: "from-indigo-600 to-indigo-700",
   },
   NONE: null,
 };

@@ -29,6 +29,7 @@ const navCategories = {
     label: "Hesaplamalar",
     items: [
       { href: "/yillik-izin-hesaplama", label: "Yıllık İzin Hesaplama" },
+      { href: "/yillik-izin-ucreti-hesaplama", label: "Yıllık İzin Ücreti" },
       { href: "/netten-brute-hesaplama", label: "Netten Brüte Hesaplama" },
       { href: "/fazla-mesai-ucreti-hesaplama", label: "Fazla Mesai" },
       { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },

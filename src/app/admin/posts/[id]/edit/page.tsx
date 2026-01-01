@@ -39,7 +39,7 @@ interface Post {
   content: string;
   excerpt: string | null;
   coverImage: string | null;
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NOTICE_PERIOD_CALC" | "AGI_CALC" | "MTV_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "ANNUAL_LEAVE_CALC" | "NET_TO_GROSS_CALC" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NOTICE_PERIOD_CALC" | "AGI_CALC" | "MTV_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "ANNUAL_LEAVE_CALC" | "ANNUAL_LEAVE_PAYMENT_CALC" | "NET_TO_GROSS_CALC" | "NONE";
   authorId: string;
   published: boolean;
 }
@@ -483,6 +483,9 @@ export default function EditPostPage() {
                       </SelectItem>
                       <SelectItem value="ANNUAL_LEAVE_CALC">
                         Yıllık İzin Hesaplama
+                      </SelectItem>
+                      <SelectItem value="ANNUAL_LEAVE_PAYMENT_CALC">
+                        Yıllık İzin Ücreti Hesaplama
                       </SelectItem>
                       <SelectItem value="NET_TO_GROSS_CALC">
                         Netten Brüte Hesaplama
