@@ -427,6 +427,15 @@ export default function NewPostPage() {
                       <SelectItem value="UNEMPLOYMENT_CALC">
                         İşsizlik Maaşı Hesaplama
                       </SelectItem>
+                      <SelectItem value="NOTICE_PERIOD_CALC">
+                        İhbar Süresi Hesaplama
+                      </SelectItem>
+                      <SelectItem value="AGI_CALC">
+                        Asgari Geçim İndirimi Hesaplama
+                      </SelectItem>
+                      <SelectItem value="MTV_CALC">
+                        MTV Hesaplama
+                      </SelectItem>
                       <SelectItem value="BEDELLI_CALC">
                         Bedelli Askerlik Hesaplama
                       </SelectItem>
