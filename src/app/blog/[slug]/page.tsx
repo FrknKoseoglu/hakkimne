@@ -8,6 +8,7 @@ import TableOfContents from "@/components/blog/TableOfContents";
 import CtaBox from "@/components/blog/CtaBox";
 import AuthorBox from "@/components/blog/AuthorBox";
 import MostReadSidebar from "@/components/blog/MostReadSidebar";
+import { ViewTracker } from "@/components/blog/ViewTracker";
 import { Navbar } from "@/components/Navbar";
 import { Clock, ArrowLeft, Eye } from "lucide-react";
 
@@ -82,15 +83,11 @@ export default async function BlogPostPage({ params, searchParams }: PageProps) 
 
   const headings = parseHeadings(post.content);
 
-  // Increment view count only for published posts
-  if (post.published) {
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/posts/${slug}/view`, {
-      method: "POST",
-    }).catch(() => {});
-  }
-
   return (
     <div className="min-h-screen bg-[var(--background-light)]">
+      {/* Client-side view tracking */}
+      <ViewTracker slug={slug} published={post.published} />
+      
       <Navbar />
       
       {/* Preview Banner */}
