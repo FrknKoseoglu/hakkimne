@@ -448,6 +448,12 @@ export default function NewPostPage() {
                       <SelectItem value="RESIGNATION_LETTER">
                         İstifa Dilekçesi Oluşturucu
                       </SelectItem>
+                      <SelectItem value="ANNUAL_LEAVE_CALC">
+                        Yıllık İzin Hesaplama
+                      </SelectItem>
+                      <SelectItem value="NET_TO_GROSS_CALC">
+                        Netten Brüte Hesaplama
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </CardContent>

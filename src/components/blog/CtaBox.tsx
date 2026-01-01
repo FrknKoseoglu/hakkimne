@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Calculator, Briefcase, Shield, Clock, Home, FileText } from "lucide-react";
+import { Calculator, Briefcase, Shield, Clock, Home, FileText, Calendar } from "lucide-react";
 
 interface CtaBoxProps {
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NOTICE_PERIOD_CALC" | "AGI_CALC" | "MTV_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NOTICE_PERIOD_CALC" | "AGI_CALC" | "MTV_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "ANNUAL_LEAVE_CALC" | "NONE";
 }
 
 const ctaConfig = {
@@ -77,6 +77,14 @@ const ctaConfig = {
     href: "/istifa-dilekcesi-olustur",
     icon: FileText,
     gradient: "from-rose-600 to-rose-700",
+  },
+  ANNUAL_LEAVE_CALC: {
+    title: "Yıllık İzin Hakkınızı Hesaplayın",
+    description: "Çalışma sürenize ve yaşınıza göre yıllık izin gün sayınızı öğrenin.",
+    buttonText: "Hemen Hesapla",
+    href: "/yillik-izin-hesaplama",
+    icon: Calendar,
+    gradient: "from-emerald-600 to-emerald-700",
   },
   NONE: null,
 };
