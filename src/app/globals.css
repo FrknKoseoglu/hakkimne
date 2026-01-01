@@ -169,6 +169,21 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+  
+  /* Cursor pointer for all interactive elements */
+  button,
+  a,
+  select,
+  [role="button"],
+  [role="link"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  label[for],
+  summary,
+  .cursor-pointer {
+    cursor: pointer;
+  }
 }
 
 /* Material Symbols */

@@ -32,8 +32,10 @@ const navCategories = {
       { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
       { href: "/kira-artis-orani-hesaplama", label: "Kira Artış Oranı" },
       { href: "/maas-zammi-hesaplama", label: "Maaş Zammı" },
+      { href: "/mtv-hesaplama", label: "MTV Hesaplama" },
     ],
   },
+
 };
 
 export function Navbar() {
