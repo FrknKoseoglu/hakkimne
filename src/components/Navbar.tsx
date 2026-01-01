@@ -28,6 +28,7 @@ const navCategories = {
   hesaplamalar: {
     label: "Hesaplamalar",
     items: [
+      { href: "/netten-brute-hesaplama", label: "Netten Brüte Hesaplama" },
       { href: "/fazla-mesai-ucreti-hesaplama", label: "Fazla Mesai" },
       { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
       { href: "/kira-artis-orani-hesaplama", label: "Kira Artış Oranı" },
