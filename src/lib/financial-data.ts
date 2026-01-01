@@ -4,9 +4,23 @@ export interface FinancialPeriod {
   minGrossWage: number;
   severanceCeiling: number;
   taxBrackets: { limit: number; rate: number }[];
+  isPlaceholder?: boolean; // True if severance ceiling is estimated/awaiting official announcement
+  placeholderNote?: string; // Explanation for placeholder data
 }
 
 export const FINANCIAL_HISTORY: FinancialPeriod[] = [
+  // --- 2026 ---
+  {
+    startDate: '2026-01-01', endDate: '2026-06-30',
+    minGrossWage: 33030.00,
+    severanceCeiling: 63000.00,
+    isPlaceholder: true,
+    placeholderNote: 'Kıdem tazminatı tavanı henüz resmi olarak açıklanmadı. Tahmini değer kullanılmaktadır.',
+    taxBrackets: [
+      { limit: 190000, rate: 0.15 }, { limit: 400000, rate: 0.20 },
+      { limit: 1500000, rate: 0.27 }, { limit: 5300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 }
+    ]
+  },
   // --- 2025 ---
   {
     startDate: '2025-07-01', endDate: '2025-12-31',

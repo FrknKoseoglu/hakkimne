@@ -22,6 +22,7 @@ const navCategories = {
       { href: "/issizlik-maasi-hesaplama", label: "İşsizlik Maaşı" },
       { href: "/ihbar-suresi-hesaplama", label: "İhbar Süresi" },
       { href: "/istifa-dilekcesi-olustur", label: "İstifa Dilekçesi Oluştur" },
+      { href: "/sgk-cikis-kodlari", label: "SGK Çıkış Kodları" },
     ],
   },
   hesaplamalar: {

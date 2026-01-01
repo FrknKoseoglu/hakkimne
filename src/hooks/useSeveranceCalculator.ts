@@ -130,6 +130,9 @@ export interface SeveranceResult {
   periodName: string; // e.g., "2024 2. Yarıyıl"
   severanceCeiling: number;
   minGrossWage: number;
+  // Placeholder warning
+  isPlaceholder: boolean;
+  placeholderNote?: string;
 }
 
 // ============================================
@@ -455,6 +458,9 @@ export function useSeveranceCalculator(input: SeveranceInput): SeveranceResult |
       periodName,
       severanceCeiling: SEVERANCE_CEILING,
       minGrossWage: getCalculationConstants(endDate).MINIMUM_WAGE_GROSS,
+      // Placeholder warning
+      isPlaceholder: getCalculationConstants(endDate).financialPeriod.isPlaceholder || false,
+      placeholderNote: getCalculationConstants(endDate).financialPeriod.placeholderNote,
     };
   }, [input]);
 }

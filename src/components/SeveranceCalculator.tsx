@@ -1144,6 +1144,29 @@ function ResultsCard({ result, formValues, formModifiedSinceCalc, onRecalculate 
         </div>
       )}
 
+      {/* Placeholder Data Warning - Tahmini Veri Uyarısı */}
+      {result.isPlaceholder && (
+        <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-300 dark:border-orange-800 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-500 shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-bold text-orange-800 dark:text-orange-200 mb-1">
+              ⚠️ Tahmini Değer Kullanılıyor
+            </p>
+            <p className="text-sm text-orange-700 dark:text-orange-300">
+              {result.placeholderNote || 'Bazı veriler henüz resmi olarak açıklanmadı.'}
+            </p>
+            <div className="mt-2 text-xs text-orange-600 dark:text-orange-400 flex items-center gap-4">
+              <span>
+                <strong>Dönem:</strong> {result.periodName}
+              </span>
+              <span>
+                <strong>Tahmini Tavan:</strong> {formatCurrency(result.severanceCeiling)}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Banner */}
       <div className="bg-gradient-to-br from-[var(--card)] to-blue-50 dark:to-blue-950/30 border border-blue-100 dark:border-blue-900/50 rounded-xl p-6 pb-16 md:p-8 md:pb-8 relative overflow-hidden">
         {/* Decorative blur circle */}
