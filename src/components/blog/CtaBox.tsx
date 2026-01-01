@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Calculator, Briefcase, Shield, Clock, Home, FileText } from "lucide-react";
 
 interface CtaBoxProps {
-  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "NONE";
+  ctaType: "SEVERANCE_CALC" | "UNEMPLOYMENT_CALC" | "NOTICE_PERIOD_CALC" | "AGI_CALC" | "MTV_CALC" | "BEDELLI_CALC" | "OVERTIME_CALC" | "RENT_CALC" | "RESIGNATION_LETTER" | "NONE";
 }
 
 const ctaConfig = {
@@ -21,6 +21,30 @@ const ctaConfig = {
     href: "/issizlik-maasi-hesaplama",
     icon: Briefcase,
     gradient: "from-green-600 to-green-700",
+  },
+  NOTICE_PERIOD_CALC: {
+    title: "İhbar Sürenizi Hesaplayın",
+    description: "İşten ayrılırken veya ayrılırken ihbar sürenizi ve ücretini hesaplayın.",
+    buttonText: "Hemen Hesapla",
+    href: "/ihbar-suresi-hesaplama",
+    icon: Clock,
+    gradient: "from-indigo-600 to-indigo-700",
+  },
+  AGI_CALC: {
+    title: "Asgari Geçim İndirimi Hesaplayın",
+    description: "Asgari geçim indirimi tutarınızı ve net maaş artışınızı hesaplayın.",
+    buttonText: "Hemen Hesapla",
+    href: "/agi-hesaplama",
+    icon: Calculator,
+    gradient: "from-cyan-600 to-cyan-700",
+  },
+  MTV_CALC: {
+    title: "MTV Hesaplayın",
+    description: "2026 yılı Motor Taşıtlar Vergisi tutarınızı ve taksit bilgilerinizi hesaplayın.",
+    buttonText: "Hemen Hesapla",
+    href: "/mtv-hesaplama",
+    icon: Calculator,
+    gradient: "from-slate-600 to-slate-700",
   },
   BEDELLI_CALC: {
     title: "Bedelli Askerlik Ücretini Hesaplayın",
