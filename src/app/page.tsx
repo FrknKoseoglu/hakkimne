@@ -14,7 +14,13 @@ import {
   Shield,
   Home as HomeIcon,
   Percent,
-  TrendingUp
+  TrendingUp,
+  Euro,
+  Plane,
+  Calendar,
+  DollarSign,
+  Car,
+  FileSearch
 } from "lucide-react";
 import { CURRENT_YEAR } from "@/lib/constants";
 
@@ -66,16 +72,30 @@ const istenAyrilmaTools = [
     href: "/ihbar-suresi-hesaplama",
     color: "indigo",
   },
+  {
+    title: "SGK Çıkış Kodları",
+    description: "İşten çıkış nedeninize göre SGK kodlarını ve haklarınızı öğrenin.",
+    icon: FileSearch,
+    href: "/sgk-cikis-kodlari",
+    color: "orange",
+  },
 ];
 
-// Section 2: Günlük Finans & Haklar
-const finansHaklarTools = [
+// Section 2: İzin ve Maaş Hesaplamaları
+const izinMaasTools = [
   {
-    title: "Bedelli Askerlik",
-    description: "Bedelli askerlik ücreti ve taksit seçeneklerini güncel rakamlarla hesaplayın.",
-    icon: Shield,
-    href: "/bedelli-askerlik-ucreti-hesaplama",
-    color: "indigo",
+    title: "Yıllık İzin Hesaplama",
+    description: "Çalışma sürenize göre hak ettiğiniz yıllık izin gün sayısını hesaplayın.",
+    icon: Calendar,
+    href: "/yillik-izin-hesaplama",
+    color: "blue",
+  },
+  {
+    title: "Yıllık İzin Ücreti",
+    description: "Kullanmadığınız izin günlerinizin parasal değerini öğrenin.",
+    icon: Wallet,
+    href: "/yillik-izin-ucreti-hesaplama",
+    color: "green",
   },
   {
     title: "Fazla Mesai Ücreti",
@@ -85,23 +105,55 @@ const finansHaklarTools = [
     color: "orange",
   },
   {
-    title: "Kira Artış Oranı",
-    description: "Yasal sınırlar dahilinde maksimum kira artış oranınızı öğrenin.",
-    icon: HomeIcon,
-    href: "/kira-artis-orani-hesaplama",
-    color: "teal",
+    title: "Netten Brüte Hesaplama",
+    description: "Net maaşınızdan brüt maaşınızı veya tam tersini hesaplayın.",
+    icon: DollarSign,
+    href: "/netten-brute-hesaplama",
+    color: "purple",
   },
   {
     title: "Maaş Zammı Hesaplama",
     description: "Zam oranınızı veya yeni maaşınızı enflasyon karşılaştırmalı hesaplayın.",
     icon: TrendingUp,
     href: "/maas-zammi-hesaplama",
+    color: "teal",
+  },
+];
+
+// Section 3: Vergi ve Harçlar
+const vergiHarcTools = [
+  {
+    title: "Bedelli Askerlik",
+    description: "2026 bedelli askerlik ücreti ve yoklama kaçağı cezalarını hesaplayın.",
+    icon: Shield,
+    href: "/bedelli-askerlik-ucreti-hesaplama",
+    color: "indigo",
+  },
+  {
+    title: "Dövizli Askerlik (€/$)",
+    description: "Yurtdışından Euro veya Dolar ile bedelli askerlik ücretini hesaplayın.",
+    icon: Euro,
+    href: "/dovizli-askerlik-hesaplama",
+    color: "blue",
+  },
+  {
+    title: "MTV Hesaplama",
+    description: "Aracınızın motorlu taşıtlar vergisini güncel tarifeyle hesaplayın.",
+    icon: Car,
+    href: "/mtv-hesaplama",
     color: "green",
+  },
+  {
+    title: "Kira Artış Oranı",
+    description: "Yasal sınırlar dahilinde maksimum kira artış oranınızı öğrenin.",
+    icon: HomeIcon,
+    href: "/kira-artis-orani-hesaplama",
+    color: "orange",
   },
 ];
 
 const stats = [
-  { value: "100+", label: "Hesaplama Yapıldı" },
+  { value: "1500+", label: "Hesaplama Yapıldı" },
   { value: "%100", label: "Ücretsiz" },
   { value: "7/24", label: "Erişilebilir" },
 ];
@@ -137,6 +189,11 @@ const colorClasses: Record<string, { bg: string; icon: string; hover: string }> 
     bg: "bg-teal-100 dark:bg-teal-900/30",
     icon: "text-teal-600 dark:text-teal-400",
     hover: "group-hover:bg-teal-600 group-hover:text-white",
+  },
+  red: {
+    bg: "bg-red-100 dark:bg-red-900/30",
+    icon: "text-red-600 dark:text-red-400",
+    hover: "group-hover:bg-red-600 group-hover:text-white",
   },
 };
 
@@ -229,7 +286,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {istenAyrilmaTools.map((tool, index) => (
               <ToolCard key={index} tool={tool} />
             ))}
@@ -237,20 +294,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Section 2: Günlük Finans & Haklar */}
+      {/* Section 2: İzin ve Maaş Hesaplamaları */}
       <section className="py-16 md:py-20 bg-[var(--muted)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">
-              Günlük Finans & Haklar
+              İzin ve Maaş Hesaplamaları
             </h2>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
-              Maaşınız, kiranız ve askerlik süreciniz için pratik hesaplamalar.
+              Yıllık izin, fazla mesai ve maaş hesaplamalarınız için araçlar.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {finansHaklarTools.map((tool, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {izinMaasTools.map((tool, index) => (
+              <ToolCard key={index} tool={tool} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3: Vergi ve Harçlar */}
+      <section className="py-16 md:py-20 bg-[var(--background-light)]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">
+              Vergi ve Harçlar
+            </h2>
+            <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
+              Askerlik, MTV ve kira artışı gibi ödemelerinizi hesaplayın.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {vergiHarcTools.map((tool, index) => (
               <ToolCard key={index} tool={tool} />
             ))}
           </div>
