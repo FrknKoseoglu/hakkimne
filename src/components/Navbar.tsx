@@ -45,10 +45,12 @@ const navCategories = {
     label: "Vergi ve Harçlar",
     items: [
       { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
+      { href: "/dovizli-askerlik-hesaplama", label: "Dövizli Askerlik (€/$)" },
       { href: "/kira-artis-orani-hesaplama", label: "Kira Artış Oranı" },
       { href: "/mtv-hesaplama", label: "MTV Hesaplama" },
     ],
   },
+
 
 };
 
