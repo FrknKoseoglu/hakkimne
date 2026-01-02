@@ -1,6 +1,7 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import { useEffect } from "react";
 import { slugify } from "@/lib/blog/utils";
 
@@ -25,6 +26,7 @@ export default function BlogContent({ content }: BlogContentProps) {
   return (
     <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-a:text-[var(--primary)] prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-pre:bg-[var(--muted)] prose-pre:text-[var(--foreground)]">
       <ReactMarkdown
+        rehypePlugins={[rehypeRaw]}
         components={{
           h2: ({ children, ...props }) => (
             <h2 {...props} className="text-2xl font-bold mt-8 mb-4 pb-2 border-b border-[var(--border-light)]">
