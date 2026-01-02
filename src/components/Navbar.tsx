@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTheme } from "./ThemeProvider";
-import { Calculator, Sun, Moon, Menu, X, ChevronDown } from "lucide-react";
+import { Calculator, Sun, Moon, Menu, X, ChevronDown, MessageCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
   NavigationMenu,
@@ -12,6 +12,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { ContactForm } from "@/components/ContactForm";
 
 // Navigation structure
 const navCategories = {
@@ -26,15 +27,25 @@ const navCategories = {
     ],
   },
   hesaplamalar: {
-    label: "Hesaplamalar",
+    label: "İzin ve Mesai",
     items: [
       { href: "/yillik-izin-hesaplama", label: "Yıllık İzin Hesaplama" },
       { href: "/yillik-izin-ucreti-hesaplama", label: "Yıllık İzin Ücreti" },
-      { href: "/netten-brute-hesaplama", label: "Netten Brüte Hesaplama" },
       { href: "/fazla-mesai-ucreti-hesaplama", label: "Fazla Mesai" },
+    ],
+  },
+  maasHesaplamalari: {
+    label: "Maaş Hesaplamaları",
+    items: [
+      { href: "/netten-brute-hesaplama", label: "Netten Brüte" },
+      { href: "/maas-zammi-hesaplama", label: "Maaş Zammı" },
+    ],
+  },
+  digerHesaplamalar: {
+    label: "Vergi ve Harçlar",
+    items: [
       { href: "/bedelli-askerlik-ucreti-hesaplama", label: "Bedelli Askerlik" },
       { href: "/kira-artis-orani-hesaplama", label: "Kira Artış Oranı" },
-      { href: "/maas-zammi-hesaplama", label: "Maaş Zammı" },
       { href: "/mtv-hesaplama", label: "MTV Hesaplama" },
     ],
   },
@@ -47,6 +58,7 @@ export function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -139,6 +151,48 @@ export function Navbar() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
+              {/* Maaş Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>{navCategories.maasHesaplamalari.label}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[220px] gap-1 p-2">
+                    {navCategories.maasHesaplamalari.items.map((item) => (
+                      <li key={item.href}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={item.href}
+                            className="block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-[var(--muted)] hover:text-[var(--text-main)] text-[var(--text-muted)]"
+                          >
+                            {item.label}
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              {/* Diğer Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>{navCategories.digerHesaplamalar.label}</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[220px] gap-1 p-2">
+                    {navCategories.digerHesaplamalar.items.map((item) => (
+                      <li key={item.href}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={item.href}
+                            className="block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-[var(--muted)] hover:text-[var(--text-main)] text-[var(--text-muted)]"
+                          >
+                            {item.label}
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
               {/* Blog Link */}
               <NavigationMenuItem>
                 <Link
@@ -147,6 +201,20 @@ export function Navbar() {
                 >
                   Blog
                 </Link>
+              </NavigationMenuItem>
+
+              {/* İletişim Button */}
+              <NavigationMenuItem>
+                <button
+                  onClick={() => {
+                    // Trigger the contact form by clicking the existing ContactForm button
+                    const contactBtn = document.querySelector('[aria-label="İletişim"]') as HTMLButtonElement;
+                    if (contactBtn) contactBtn.click();
+                  }}
+                  className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors bg-transparent hover:bg-[var(--muted)] text-[var(--text-muted)] hover:text-[var(--text-main)] cursor-pointer"
+                >
+                  İletişim
+                </button>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -187,7 +255,7 @@ export function Navbar() {
       {/* Mobile Menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          isMenuOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="border-t border-[var(--border-light)] bg-[var(--card)] px-4 py-3 space-y-2">
@@ -206,7 +274,7 @@ export function Navbar() {
             </button>
             <div
               className={`overflow-hidden transition-all duration-200 ${
-                expandedSection === "istenCikis" ? "max-h-48" : "max-h-0"
+                expandedSection === "istenCikis" ? "max-h-[500px]" : "max-h-0"
               }`}
             >
               <div className="pl-4 space-y-1">
@@ -239,11 +307,77 @@ export function Navbar() {
             </button>
             <div
               className={`overflow-hidden transition-all duration-200 ${
-                expandedSection === "hesaplamalar" ? "max-h-48" : "max-h-0"
+                expandedSection === "hesaplamalar" ? "max-h-[400px]" : "max-h-0"
               }`}
             >
               <div className="pl-4 space-y-1">
                 {navCategories.hesaplamalar.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block py-2.5 px-4 rounded-lg text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Maaş Section */}
+          <div className="space-y-1">
+            <button
+              onClick={() => toggleSection("maasHesaplamalari")}
+              className="flex items-center justify-between w-full py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors cursor-pointer"
+            >
+              <span>{navCategories.maasHesaplamalari.label}</span>
+              <ChevronDown
+                className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${
+                  expandedSection === "maasHesaplamalari" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            <div
+              className={`overflow-hidden transition-all duration-200 ${
+                expandedSection === "maasHesaplamalari" ? "max-h-[400px]" : "max-h-0"
+              }`}
+            >
+              <div className="pl-4 space-y-1">
+                {navCategories.maasHesaplamalari.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block py-2.5 px-4 rounded-lg text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Diğer Section */}
+          <div className="space-y-1">
+            <button
+              onClick={() => toggleSection("digerHesaplamalar")}
+              className="flex items-center justify-between w-full py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors cursor-pointer"
+            >
+              <span>{navCategories.digerHesaplamalar.label}</span>
+              <ChevronDown
+                className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-200 ${
+                  expandedSection === "digerHesaplamalar" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            <div
+              className={`overflow-hidden transition-all duration-200 ${
+                expandedSection === "digerHesaplamalar" ? "max-h-[400px]" : "max-h-0"
+              }`}
+            >
+              <div className="pl-4 space-y-1">
+                {navCategories.digerHesaplamalar.items.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
@@ -265,6 +399,18 @@ export function Navbar() {
           >
             Blog
           </Link>
+
+          {/* İletişim Button */}
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              const contactBtn = document.querySelector('[aria-label="İletişim"]') as HTMLButtonElement;
+              if (contactBtn) contactBtn.click();
+            }}
+            className="flex items-center w-full py-3 px-4 rounded-lg text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--muted)] transition-colors cursor-pointer"
+          >
+            İletişim
+          </button>
         </div>
       </div>
     </nav>
