@@ -1,3 +1,77 @@
+// ============================================
+// MEMUR MAAŞ KATSAYISI (Civil Servant Salary Coefficient)
+// ============================================
+// This coefficient is used across multiple calculations:
+// - Bedelli Askerlik (Military Service Fee)
+// - Kıdem Tazminatı Tavanı (Severance Pay Ceiling)
+// - Emekli İkramiyesi (Retirement Bonus)
+
+export interface MemurKatsayiPeriod {
+  period: string;
+  katsayi: number;
+  validFrom: string; // YYYY-MM-DD
+  validTo: string;   // YYYY-MM-DD
+}
+
+export const MEMUR_KATSAYI_HISTORY: MemurKatsayiPeriod[] = [
+  {
+    period: "2026 Ocak-Haziran",
+    katsayi: 1.387870,
+    validFrom: '2026-01-01',
+    validTo: '2026-06-30',
+  },
+  {
+    period: "2025 Temmuz-Aralık",
+    katsayi: 1.170211,
+    validFrom: '2025-07-01',
+    validTo: '2025-12-31',
+  },
+  {
+    period: "2025 Ocak-Haziran",
+    katsayi: 1.012556,
+    validFrom: '2025-01-01',
+    validTo: '2025-06-30',
+  },
+];
+
+/**
+ * Get memur maaş katsayısı for a specific date
+ * @param date The date to look up coefficient for
+ * @returns The coefficient for that date, or current coefficient if not found
+ */
+export const getMemurKatsayiByDate = (date: Date): number => {
+  const targetDateStr = date.toISOString().split('T')[0];
+  
+  const period = MEMUR_KATSAYI_HISTORY.find(p => 
+    targetDateStr >= p.validFrom && targetDateStr <= p.validTo
+  );
+
+  // If not found, return current (latest) coefficient
+  return period?.katsayi ?? MEMUR_KATSAYI_HISTORY[0].katsayi;
+};
+
+// Current coefficient (for convenience)
+export const CURRENT_MEMUR_KATSAYISI = MEMUR_KATSAYI_HISTORY[0].katsayi;
+
+// Severance ceiling base indicator (fixed value)
+// Kıdem tazminatı tavan göstergesi (sabit değer)
+export const KIDEM_TAVAN_GOSTERGESI = 46080.89;
+
+/**
+ * Calculate severance ceiling for a specific date
+ * Formula: KIDEM_TAVAN_GOSTERGESI × memur_katsayisi
+ * @param date The date to calculate ceiling for
+ * @returns The severance ceiling amount
+ */
+export const calculateSeveranceCeiling = (date: Date): number => {
+  const katsayi = getMemurKatsayiByDate(date);
+  return KIDEM_TAVAN_GOSTERGESI * katsayi;
+};
+
+// ============================================
+// FINANCIAL PERIOD DATA
+// ============================================
+
 export interface FinancialPeriod {
   startDate: string; // YYYY-MM-DD
   endDate: string;   // YYYY-MM-DD
@@ -13,9 +87,7 @@ export const FINANCIAL_HISTORY: FinancialPeriod[] = [
   {
     startDate: '2026-01-01', endDate: '2026-06-30',
     minGrossWage: 33030.00,
-    severanceCeiling: 63000.00,
-    isPlaceholder: true,
-    placeholderNote: 'Kıdem tazminatı tavanı henüz resmi olarak açıklanmadı. Tahmini değer kullanılmaktadır.',
+    severanceCeiling: calculateSeveranceCeiling(new Date('2026-01-01')), // 63948.74
     taxBrackets: [
       { limit: 190000, rate: 0.15 }, { limit: 400000, rate: 0.20 },
       { limit: 1500000, rate: 0.27 }, { limit: 5300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 }
@@ -25,7 +97,7 @@ export const FINANCIAL_HISTORY: FinancialPeriod[] = [
   {
     startDate: '2025-07-01', endDate: '2025-12-31',
     minGrossWage: 26005.50,
-    severanceCeiling: 53919.68,
+    severanceCeiling: calculateSeveranceCeiling(new Date('2025-07-01')), // 53919.68
     taxBrackets: [
       { limit: 158000, rate: 0.15 }, { limit: 330000, rate: 0.20 },
       { limit: 800000, rate: 0.27 }, { limit: 4300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 }
@@ -366,28 +438,62 @@ export interface BedelliDonemData {
 }
 
 // Historical Bedelli data sorted by date (newest first)
+// Note: MEMUR_MAAS_KATSAYISI values now reference MEMUR_KATSAYI_HISTORY for consistency
 export const BEDELLI_HISTORY: BedelliDonemData[] = [
-  // --- 2025 Temmuz-Aralık (Current) ---
+  // --- 2026 Ocak-Haziran ---
   {
-    period: "2025 Temmuz-Aralık",
-    MEMUR_MAAS_KATSAYISI: 1.170211,
+    period: "2026 Ocak-Haziran",
+    MEMUR_MAAS_KATSAYISI: MEMUR_KATSAYI_HISTORY[0].katsayi, // 1.387870
     BEDELLI_GOSTERGE: 240000,
     EK_BEDEL_GOSTERGE: 3500,
-    IDARI_PARA_CEZASI_KENDILIGINDEN: 40.0,
-    IDARI_PARA_CEZASI_YAKALANMA: 80.0,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 58.13,
+    IDARI_PARA_CEZASI_YAKALANMA: 116.27,
+    VALID_FROM: '2026-01-01',
+    VALID_TO: '2026-06-30',
+  },
+  // --- 2025 Temmuz-Aralık ---
+  {
+    period: "2025 Temmuz-Aralık",
+    MEMUR_MAAS_KATSAYISI: MEMUR_KATSAYI_HISTORY[1].katsayi, // 1.170211
+    BEDELLI_GOSTERGE: 240000,
+    EK_BEDEL_GOSTERGE: 3500,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 46.32,
+    IDARI_PARA_CEZASI_YAKALANMA: 92.65,
     VALID_FROM: '2025-07-01',
     VALID_TO: '2025-12-31',
   },
   // --- 2025 Ocak-Haziran ---
   {
     period: "2025 Ocak-Haziran",
-    MEMUR_MAAS_KATSAYISI: 1.012556,
+    MEMUR_MAAS_KATSAYISI: MEMUR_KATSAYI_HISTORY[2].katsayi, // 1.012556
     BEDELLI_GOSTERGE: 240000,
     EK_BEDEL_GOSTERGE: 3500,
-    IDARI_PARA_CEZASI_KENDILIGINDEN: 35.0,
-    IDARI_PARA_CEZASI_YAKALANMA: 70.0,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 46.32,
+    IDARI_PARA_CEZASI_YAKALANMA: 92.65,
     VALID_FROM: '2025-01-01',
     VALID_TO: '2025-06-30',
+  },
+  // --- 2024 ---
+  {
+    period: "2024",
+    MEMUR_MAAS_KATSAYISI: 1.0, // Placeholder
+    BEDELLI_GOSTERGE: 240000,
+    EK_BEDEL_GOSTERGE: 3500,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 32.18,
+    IDARI_PARA_CEZASI_YAKALANMA: 64.37,
+    VALID_FROM: '2024-01-01',
+    VALID_TO: '2024-12-31',
+  },
+  // --- 2023 ---
+  {
+    period: "2023",
+    MEMUR_MAAS_KATSAYISI: 1.0, // Placeholder
+    BEDELLI_GOSTERGE: 240000,
+    EK_BEDEL_GOSTERGE: 3500,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 27.00, // Estimated
+    IDARI_PARA_CEZASI_YAKALANMA: 54.00,      // Estimated
+    VALID_FROM: '2023-01-01',
+    VALID_TO: '2023-12-31',
   },
 ];
 
@@ -415,6 +521,62 @@ export const getBedelliDataByDate = (date: Date): BedelliDonemData => {
 };
 
 // ============================================
+// YEARLY ADMINISTRATIVE FINE CALCULATION
+// ============================================
+
+export interface YearlyFineBreakdown {
+  year: number;
+  days: number;
+  dailyRate: number;
+  total: number;
+}
+
+/**
+ * Calculate administrative fine year-by-year
+ * Each year's fine is calculated using that year's official rate
+ * @param startDate Evasion start date
+ * @param endDate Evasion end date (usually today)
+ * @param captureType 'kendiliginden' or 'yakalanma'
+ * @returns Array of yearly breakdowns and total
+ */
+export function calculateYearlyFines(
+  startDate: Date,
+  endDate: Date,
+  captureType: 'kendiliginden' | 'yakalanma'
+): { breakdown: YearlyFineBreakdown[]; total: number } {
+  const breakdown: YearlyFineBreakdown[] = [];
+  let current = new Date(startDate);
+  
+  while (current <= endDate) {
+    const year = current.getFullYear();
+    const yearStart = new Date(Math.max(current.getTime(), new Date(year, 0, 1).getTime()));
+    const yearEnd = new Date(Math.min(endDate.getTime(), new Date(year, 11, 31).getTime()));
+    
+    const daysDiff = Math.ceil((yearEnd.getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    // Get that year's rate (use mid-year date to avoid boundary issues)
+    const period = getBedelliDataByDate(new Date(year, 6, 1));
+    const dailyRate = captureType === 'kendiliginden'
+      ? period.IDARI_PARA_CEZASI_KENDILIGINDEN
+      : period.IDARI_PARA_CEZASI_YAKALANMA;
+    
+    breakdown.push({
+      year,
+      days: daysDiff,
+      dailyRate,
+      total: daysDiff * dailyRate,
+    });
+    
+    // Move to next year
+    current = new Date(year + 1, 0, 1);
+  }
+  
+  const total = breakdown.reduce((sum, item) => sum + item.total, 0);
+  return { breakdown, total };
+}
+
+
+// ============================================
 // RENT INCREASE RATES (Kira Artış Oranları)
 // ============================================
 // TÜFE 12 Aylık Ortalamalara Göre Değişim Oranı
@@ -428,6 +590,7 @@ export interface RentRatePeriod {
 }
 
 export const RENT_RATES: RentRatePeriod[] = [
+  { label: "Ocak 2026", value: "2026-01", rate: 34.88 },
   { label: "Aralık 2025", value: "2025-12", rate: 35.91 },
   { label: "Kasım 2025", value: "2025-11", rate: 34.85 },
   { label: "Ekim 2025", value: "2025-10", rate: 33.50 },

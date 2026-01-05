@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { BEDELLI_ASKERLIK } from "@/lib/financial-data";
+import { BEDELLI_ASKERLIK, calculateYearlyFines, YearlyFineBreakdown } from "@/lib/financial-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -60,6 +60,7 @@ interface CalculationResult {
   total: number;
   days: number;
   months: number;
+  yearlyBreakdown?: YearlyFineBreakdown[];
 }
 
 export function MilitaryCalculator() {
@@ -94,12 +95,10 @@ export function MilitaryCalculator() {
         BEDELLI_ASKERLIK.MEMUR_MAAS_KATSAYISI
       : 0;
 
-    // İdari Para Cezası (always applies for evaders)
-    const dailyRate =
-      captureType === "kendiliginden"
-        ? BEDELLI_ASKERLIK.IDARI_PARA_CEZASI_KENDILIGINDEN
-        : BEDELLI_ASKERLIK.IDARI_PARA_CEZASI_YAKALANMA;
-    const idariParaCezasi = days * dailyRate;
+    // İdari Para Cezası - YEAR BY YEAR CALCULATION
+    const fineResult = calculateYearlyFines(startDate, today, captureType);
+    const idariParaCezasi = fineResult.total;
+    const yearlyBreakdown = fineResult.breakdown;
 
     const total = baseBedelli + ekBedel + idariParaCezasi;
 
@@ -110,6 +109,7 @@ export function MilitaryCalculator() {
       total,
       days,
       months,
+      yearlyBreakdown,
     });
   };
 
@@ -374,21 +374,37 @@ export function MilitaryCalculator() {
                   </>
                 )}
 
-                <div className="flex justify-between items-center py-3">
-                  <div>
-                    <div className="font-medium text-amber-600 dark:text-amber-400">
-                      İdari Para Cezası
-                    </div>
-                    <div className="text-xs text-[var(--text-muted)]">
-                      {result.days} gün ×{" "}
-                      {captureType === "kendiliginden"
-                        ? BEDELLI_ASKERLIK.IDARI_PARA_CEZASI_KENDILIGINDEN
-                        : BEDELLI_ASKERLIK.IDARI_PARA_CEZASI_YAKALANMA}{" "}
-                      TL (Vergi Dairesine ödenir)
-                    </div>
+                <div className="py-3">
+                  <div className="font-medium text-amber-600 dark:text-amber-400 mb-2">
+                    İdari Para Cezası (Yıl Bazlı)
                   </div>
-                  <div className="font-semibold text-amber-600 dark:text-amber-400">
-                    +{formatCurrency(result.idariParaCezasi)}
+                  
+                  {/* Year-by-year breakdown */}
+                  {result.yearlyBreakdown && result.yearlyBreakdown.length > 1 && (
+                    <div className="space-y-2">
+                      {result.yearlyBreakdown.map((item) => (
+                        <div key={item.year} className="flex justify-between text-xs text-[var(--text-muted)] bg-[var(--muted)] px-3 py-2 rounded">
+                          <span>{item.year}: {item.days} gün × {item.dailyRate.toFixed(2)} TL</span>
+                          <span className="font-mono">{formatCurrency(item.total)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Simple display for single year */}
+                  {result.yearlyBreakdown && result.yearlyBreakdown.length === 1 && (
+                    <div className="text-xs text-[var(--text-muted)] mb-2">
+                      {result.days} gün × {result.yearlyBreakdown[0].dailyRate.toFixed(2)} TL
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-[var(--border-light)]">
+                    <div className="text-xs text-[var(--text-muted)]">
+                      Toplam {result.days} gün (Vergi Dairesine ödenir)
+                    </div>
+                    <div className="font-semibold text-amber-600 dark:text-amber-400 text-lg">
+                      +{formatCurrency(result.idariParaCezasi)}
+                    </div>
                   </div>
                 </div>
               </div>

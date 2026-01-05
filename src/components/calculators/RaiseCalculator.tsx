@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, TrendingDown, Calculator, Percent, AlertTriangle, CheckCircle } from "lucide-react";
 
-// 2024 annual inflation reference (TÜFE)
-const ANNUAL_INFLATION = 47.09;
+// 2025 annual inflation reference (TÜFE)
+const ANNUAL_INFLATION = 30.89;
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("tr-TR", {

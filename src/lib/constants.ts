@@ -1,10 +1,22 @@
+import { calculateSeveranceCeiling } from './financial-data';
+
 export const CURRENT_YEAR = new Date().getFullYear();
 
+// Helper to format severance ceiling for display
+function formatSeveranceCeiling(date: Date): string {
+  const amount = calculateSeveranceCeiling(date);
+  return amount.toLocaleString('tr-TR', { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
+  });
+}
+
 // Kıdem tazminatı tavan bilgileri
+// Now dynamically calculated from MEMUR_KATSAYI_HISTORY
 export const SEVERANCE_CEILING = {
   2026: {
     firstHalf: {
-      amount: "63.000,00", // PLACEHOLDER - awaiting official announcement
+      amount: formatSeveranceCeiling(new Date("2026-01-01")), // Auto-calculated: 63.948,74
       period: "Ocak-Haziran",
       startDate: new Date("2026-01-01"),
       endDate: new Date("2026-06-30"),
@@ -12,13 +24,13 @@ export const SEVERANCE_CEILING = {
   },
   2025: {
     firstHalf: {
-      amount: "46.655,43",
+      amount: formatSeveranceCeiling(new Date("2025-01-01")), // Auto-calculated: 46.655,43
       period: "Ocak-Haziran",
       startDate: new Date("2025-01-01"),
       endDate: new Date("2025-06-30"),
     },
     secondHalf: {
-      amount: "53.919,68",
+      amount: formatSeveranceCeiling(new Date("2025-07-01")), // Auto-calculated: 53.919,68
       period: "Temmuz-Aralık",
       startDate: new Date("2025-07-01"),
       endDate: new Date("2025-12-31"),
