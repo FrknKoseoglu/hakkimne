@@ -161,13 +161,13 @@ export function MilitaryCalculator() {
             {/* Period Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
               <Calendar className="w-4 h-4" />
-              01 Temmuz 2025 - 31 Aralık 2025
+              2026 1. Yarıyıl (01 Ocak - 30 Haziran 2026)
             </div>
 
             {/* Main Amount */}
             <div>
               <p className="text-sm text-[var(--text-muted)] mb-2">
-                2025 Bedelli Askerlik Ücreti
+                2026 Bedelli Askerlik Ücreti
               </p>
               <p className="text-4xl md:text-5xl font-bold text-[var(--primary)]">
                 {formatCurrency(standardBedelliFee)}

@@ -1367,7 +1367,7 @@ function ResultsCard({ result, formValues, formModifiedSinceCalc, onRecalculate 
 
       {/* Footer Note */}
       <p className="text-xs text-center text-[var(--text-muted)]">
-        * Kıdem tavanı: ₺53.919,68 (2025 2. Yarıyıl) | Asgari ücret: ₺26.005,50
+        * Kıdem tavanı: {formatCurrency(result.severanceCeiling)} ({result.periodName}) | Asgari ücret: {formatCurrency(result.minGrossWage)}
       </p>
 
       {/* Share Dialog for Desktop */}
