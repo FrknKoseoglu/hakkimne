@@ -16,7 +16,7 @@ export interface MemurKatsayiPeriod {
 export const MEMUR_KATSAYI_HISTORY: MemurKatsayiPeriod[] = [
   {
     period: "2026 Ocak-Haziran",
-    katsayi: 1.387870,
+    katsayi: 1.387871,
     validFrom: '2026-01-01',
     validTo: '2026-06-30',
   },
@@ -440,16 +440,27 @@ export interface BedelliDonemData {
 // Historical Bedelli data sorted by date (newest first)
 // Note: MEMUR_MAAS_KATSAYISI values now reference MEMUR_KATSAYI_HISTORY for consistency
 export const BEDELLI_HISTORY: BedelliDonemData[] = [
-  // --- 2026 Ocak-Haziran ---
+  // --- 2026 Nisan 17 - Haziran 30 (Yeni Gösterge) ---
   {
-    period: "2026 Ocak-Haziran",
-    MEMUR_MAAS_KATSAYISI: MEMUR_KATSAYI_HISTORY[0].katsayi, // 1.387870
+    period: "2026 Nisan-Haziran (Güncel)",
+    MEMUR_MAAS_KATSAYISI: MEMUR_KATSAYI_HISTORY[0].katsayi, // 1.387871
+    BEDELLI_GOSTERGE: 300000,
+    EK_BEDEL_GOSTERGE: 3500,
+    IDARI_PARA_CEZASI_KENDILIGINDEN: 58.13,
+    IDARI_PARA_CEZASI_YAKALANMA: 116.27,
+    VALID_FROM: '2026-04-17',
+    VALID_TO: '2026-06-30',
+  },
+  // --- 2026 Ocak 01 - Nisan 16 ---
+  {
+    period: "2026 Ocak-Nisan",
+    MEMUR_MAAS_KATSAYISI: MEMUR_KATSAYI_HISTORY[0].katsayi, // 1.387871
     BEDELLI_GOSTERGE: 240000,
     EK_BEDEL_GOSTERGE: 3500,
     IDARI_PARA_CEZASI_KENDILIGINDEN: 58.13,
     IDARI_PARA_CEZASI_YAKALANMA: 116.27,
     VALID_FROM: '2026-01-01',
-    VALID_TO: '2026-06-30',
+    VALID_TO: '2026-04-16',
   },
   // --- 2025 Temmuz-Aralık ---
   {
@@ -590,6 +601,10 @@ export interface RentRatePeriod {
 }
 
 export const RENT_RATES: RentRatePeriod[] = [
+  { label: "Mayıs 2026", value: "2026-05", rate: 32.43 },
+  { label: "Nisan 2026", value: "2026-04", rate: 32.82 },
+  { label: "Mart 2026", value: "2026-03", rate: 33.39 },
+  { label: "Şubat 2026", value: "2026-02", rate: 33.98 },
   { label: "Ocak 2026", value: "2026-01", rate: 34.88 },
   { label: "Aralık 2025", value: "2025-12", rate: 35.91 },
   { label: "Kasım 2025", value: "2025-11", rate: 34.85 },
