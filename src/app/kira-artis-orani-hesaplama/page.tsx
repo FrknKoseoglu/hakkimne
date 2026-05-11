@@ -6,7 +6,7 @@ import { CURRENT_YEAR } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: `Kira Artış Oranı Hesaplama ${CURRENT_YEAR} | Yasal TÜFE ile Kira Zammı - Hakkım Ne?`,
-  description: `${CURRENT_YEAR} Aralık ayı kira artış oranı yüzde kaç oldu? TÜİK 12 aylık ortalamalara göre yasal kira zammı hesaplama aracı.`,
+  description: `${CURRENT_YEAR} Mayıs ayı kira artış oranı yüzde kaç oldu? TÜİK 12 aylık ortalamalara göre yasal kira zammı hesaplama aracı.`,
   keywords: [
     "kira artış oranı hesaplama",
     "kira zammı hesaplama",

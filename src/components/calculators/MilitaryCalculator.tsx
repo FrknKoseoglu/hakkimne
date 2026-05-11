@@ -159,9 +159,14 @@ export function MilitaryCalculator() {
         <div className="bg-[var(--card)] rounded-2xl p-6 md:p-8 border border-[var(--border-light)] shadow-lg">
           <div className="text-center space-y-6">
             {/* Period Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
-              <Calendar className="w-4 h-4" />
-              2026 1. Yarıyıl (01 Ocak - 30 Haziran 2026)
+            <div className="inline-flex flex-col items-center gap-1 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-2xl text-sm font-medium">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                {BEDELLI_ASKERLIK.period}
+              </div>
+              <span className="text-xs opacity-75">
+                ({new Date(BEDELLI_ASKERLIK.VALID_FROM).toLocaleDateString("tr-TR")} - {new Date(BEDELLI_ASKERLIK.VALID_TO).toLocaleDateString("tr-TR")})
+              </span>
             </div>
 
             {/* Main Amount */}
